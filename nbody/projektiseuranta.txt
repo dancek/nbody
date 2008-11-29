@@ -1,0 +1,20 @@
+5.11. noin 5h suunnittelua ja yleistä selvittelyä
+	- sdljava on utter crap
+	- luokkarakenne paperille
+	- selvittelin fysiikan ja grafiikan pyörittämistä, http://dewitters.koonsolo.com/gameloop.html (tai sitten eri threadit)
+	
+6.11. 3h: luokkien Game, Planet ja World hahmottelua, gravitaatiomallinnus
+	- testasin gravitaatiomallinnuksen toimivuutta keräämällä maan ja kuun tiedot wikipediasta, näyttää toimivan realistisesti
+	
+7.11. 1h: säikeiden selvittelyä
+	- laitoin fysiikkamallinnuksen omaan säikeeseensä, joka toimii tietyllä fps:llä
+
+11.11. 1h: projektisuunnitelma
+	- ensisijaiset ja toissijaiset tavoitteet
+	- alustava aikataulu tavoitteineen
+
+vko 47 4h: säikeiden opettelu
+
+vko 48 3h: ResourceBundle:n opettelu
+
+28.11. 2h: subversion-säätö
