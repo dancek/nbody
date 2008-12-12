@@ -20,7 +20,14 @@ vko 48 3h: ResourceBundle:n opettelu
 28.11. 2h: subversion-säätö
 29.11. 1h: subversion-säätö
 
+YHTEENSÄ 20h
+
 4.12. 2h: graafinen käyttöliittymä JGamella
 	- toimii fysiikan kanssa
 		* jokainen planeetta on valkoinen pallura
 	- käytännössä todettu että noin sata fyysistä kappaletta on maksimi, jos kaikki gravitoivat
+	1h: parametreilla leikkimistä
+
+11.12. 2h: 2d-grafiikkaluento
+
+12.12. 6h: JPaneliin piirtäminen, ideointi

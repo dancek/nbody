@@ -19,7 +19,7 @@ public class Game {
     public static void main(String[] args) throws InterruptedException {
         World world = World.generateWorld(200);
         
-        ScheduledFuture<?> physicsThreadHandle = Physics.startPhysics(world);
+        ScheduledFuture<?> physicsThreadHandle = Physics.startPhysics(world, null);
         
         Thread.sleep(5000);
         

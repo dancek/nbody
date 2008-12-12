@@ -9,6 +9,8 @@ package dancek.nbody;
  */
 public class Planet extends PhysicalObject {
 
+    private int size;
+
     /**
      * @param position
      * @param position2
@@ -18,7 +20,15 @@ public class Planet extends PhysicalObject {
      */
     public Planet(double position, double position2, double velocity, double velocity2, double mass) {
         super(position, position2, velocity, velocity2, mass);
-        // TODO Auto-generated constructor stub
+        this.size = (int) Math.log(mass);
+   }
+    
+    public int getSize() {
+        return this.size;
     }
-
+    
+    protected void setMass(double mass) {
+        super.setMass(mass);
+        this.size = (int) Math.log(mass);
+    }
 }
