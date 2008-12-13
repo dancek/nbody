@@ -61,6 +61,10 @@ public abstract class PhysicalObject {
     public double getLinearVelocity() {
         return this.velocity.length();
     }
+    
+    public double getDirection() {
+        return Math.atan2(this.velocity.y, this.velocity.x) + Math.PI;
+    }
 
     /**
      * Päivittää kappaleen sijainnin ja nopeuden. Käyttää Verlet-integrointia,

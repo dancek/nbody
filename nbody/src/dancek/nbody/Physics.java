@@ -24,7 +24,7 @@ public class Physics implements Runnable {
 
     }
 
-    public static ScheduledFuture<?> startPhysics(final World world, final JPanel displayPanel) {
+    public static ScheduledFuture<?> startPhysics(final World world) {
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
         Runnable gamePhysics = new Runnable() {
@@ -32,8 +32,22 @@ public class Physics implements Runnable {
                 world.resetAllForces();
                 world.gravitateAll();
                 world.updateAll(PHYSICS_TIMESTEP);
-                if (displayPanel != null)
-                    displayPanel.repaint();
+            }
+        };
+
+        return scheduler.scheduleAtFixedRate(gamePhysics, 0, (long) (1000 * PHYSICS_TIMESTEP), TimeUnit.MILLISECONDS);
+    }
+
+    public static ScheduledFuture<?> startPhysics(final World world, final JPanel displayPanel, final JPanel planetPanel) {
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+        Runnable gamePhysics = new Runnable() {
+            public void run() {
+                world.resetAllForces();
+                world.gravitateAll();
+                world.updateAll(PHYSICS_TIMESTEP);
+                displayPanel.repaint();
+                planetPanel.repaint();
             }
         };
 

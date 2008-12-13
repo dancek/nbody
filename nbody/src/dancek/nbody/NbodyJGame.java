@@ -66,7 +66,7 @@ public class NbodyJGame extends JGEngine {
             if (obj instanceof Planet)
                 new JGPlanet((Planet) obj);
         }
-        this.physicsThreadHandle = Physics.startPhysics(this.world, null);
+        this.physicsThreadHandle = Physics.startPhysics(this.world);
     }
 
     public void doFrame() {

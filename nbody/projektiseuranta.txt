@@ -30,4 +30,6 @@ YHTEENSÄ 20h
 
 11.12. 2h: 2d-grafiikkaluento
 
-12.12. 6h: JPaneliin piirtäminen, ideointi
+12.12. 8h: JPaneliin piirtäminen, ideointi, sivupaneeli
+
+13.12. 3h: sivupaneeli
