@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.Random;
 
-import javax.vecmath.Vector2d;
+import dancek.vecmath.SimpleVector;
 
 /**
  * @author Hannu Hartikainen
@@ -67,7 +67,7 @@ public class World {
     }
 
     public void gravitate(Planet planet1, Planet planet2) {
-        Vector2d a = planet1.getPosition();
+        SimpleVector a = planet1.getPosition();
         a.sub(planet2.getPosition());
 
         double rSquared = a.lengthSquared();
@@ -157,7 +157,7 @@ public class World {
         // bigger = temp;
         // }
 
-        Vector2d distanceVector = bigger.getPosition();
+        SimpleVector distanceVector = bigger.getPosition();
         distanceVector.sub(smaller.getPosition());
 
         double r = distanceVector.length();

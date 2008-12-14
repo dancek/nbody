@@ -3,7 +3,6 @@
  */
 package dancek.nbody;
 
-import java.awt.Graphics2D;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -17,7 +16,7 @@ import javax.swing.JPanel;
  */
 public class Physics implements Runnable {
 
-    private static final int PHYSICS_FPS = 50;
+    private static final int PHYSICS_FPS = 60;
     protected static final double PHYSICS_TIMESTEP = 1.0 / PHYSICS_FPS;
 
     public void run() {
