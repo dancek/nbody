@@ -84,8 +84,12 @@ public abstract class PhysicalObject {
     /**
      * Päivittää kappaleen sijainnin ja nopeuden. Käyttää Verlet-integrointia,
      * joka on Euleria selvästi tarkempi (Euler on se intuitiivisin toteutus).
-     * Lisätiedot Wikipediasta, josta itsekin selvitin menetelmän
-     * yksityiskohdat.
+     * 
+     * Kaavat ovat siis seuraavat:
+     * <pre>
+     *  Euler: x(t+dt) = x(t) + v(t)*dt
+     * Verlet: x(t+dt) = 2*x(t) - x(t-dt) + a(t)*dt*dt
+     * </pre>
      * 
      * @param dt aika, jolla simulaatiota viedään eteenpäin
      */
@@ -95,21 +99,15 @@ public abstract class PhysicalObject {
 
         SimpleVector newLastPosition = this.position.clone();
 
-        // normaali verlet
-        this.position.x = 2 * this.position.x - this.lastPosition.x + this.acceleration.x * dt * dt;
-        this.position.y = 2 * this.position.y - this.lastPosition.y + this.acceleration.y * dt * dt;
-
+        // on ehdottoman tärkeää laskea nopeus ennen kuin päivittää paikkaa
+        // (hakkasin päätäni seinään tämän kanssa noin tunnin...)
         this.velocity = this.position.clone();
         this.velocity.sub(this.lastPosition);
         this.velocity.scale(1.0d / dt);
 
-        // this.position.x += this.velocity.x * dt + 0.5 * this.acceleration.x *
-        // dt * dt;
-        // this.position.y += this.velocity.y * dt + 0.5 * this.acceleration.y *
-        // dt * dt;
-        //        
-        // this.velocity.x += this.acceleration.x * dt;
-        // this.velocity.y += this.acceleration.y * dt;
+        // tässä siis Verlet-integrointi
+        this.position.x = 2 * this.position.x - this.lastPosition.x + this.acceleration.x * dt * dt;
+        this.position.y = 2 * this.position.y - this.lastPosition.y + this.acceleration.y * dt * dt;
 
         this.lastPosition = newLastPosition;
     }

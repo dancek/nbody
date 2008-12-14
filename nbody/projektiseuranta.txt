@@ -33,3 +33,5 @@ YHTEENSÄ 20h
 12.12. 8h: JPaneliin piirtäminen, ideointi, sivupaneeli
 
 13.12. 6h: sivupaneeli
+
+14.12. 3h: sivupaneeli (ja liittyvät toiminnot), bugikorjaus, verletin kehitys

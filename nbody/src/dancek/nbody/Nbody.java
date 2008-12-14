@@ -1,5 +1,7 @@
 package dancek.nbody;
 
+import java.util.Random;
+
 /**
  * Pääluokka, joka sisältää main-metodin. Jos teen pelistä appletin, yritän
  * laittaa tämän luokan käynnistämään myös sen.
@@ -7,6 +9,8 @@ package dancek.nbody;
  * @author Hannu Hartikainen
  */
 public class Nbody {
+
+    public static final Random rand = new Random();
 
     /**
      * Main-metodi.

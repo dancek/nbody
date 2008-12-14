@@ -31,7 +31,6 @@ public class NbodyPanel extends JPanel {
 
         g2d.setBackground(Color.black);
         g2d.clearRect(0, 0, this.getWidth(), this.getHeight());
-        g2d.setColor(Color.yellow);
 
         for (PhysicalObject obj : this.world.getPhysicalObjects()) {
             if (obj instanceof Planet) {
@@ -39,6 +38,8 @@ public class NbodyPanel extends JPanel {
                 int x = (int) obj.getPosition().x + this.xOffset;
                 int y = (int) obj.getPosition().y + this.yOffset;
                 int size = planet.getSize();
+                
+                g2d.setColor(planet.getColor());
 
                 // vähennetään koordinaateista ympyrän säde, jotta piirros tulee
                 // keskikohdan mukaan.

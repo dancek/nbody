@@ -49,6 +49,7 @@ public class PlanetPanel extends javax.swing.JPanel {
         jLabel5 = new javax.swing.JLabel();
         xPositionTextField = new javax.swing.JTextField();
         yPositionTextField = new javax.swing.JTextField();
+        planetColor = new javax.swing.JLabel();
 
         setBorder(javax.swing.BorderFactory.createTitledBorder("Planet"));
         setMinimumSize(new java.awt.Dimension(300, 400));
@@ -92,12 +93,18 @@ public class PlanetPanel extends javax.swing.JPanel {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 velocitySliderChanged(evt);
             }
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                velocitySliderChanged(evt);
+            }
         });
 
         directionSlider.setMaximum(6283);
         directionSlider.setValue(0);
         directionSlider.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
+                velocitySliderChanged(evt);
+            }
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
                 velocitySliderChanged(evt);
             }
         });
@@ -126,6 +133,11 @@ public class PlanetPanel extends javax.swing.JPanel {
         yPositionTextField.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
         yPositionTextField.setText("0");
 
+        planetColor.setBackground(new java.awt.Color(153, 153, 153));
+        planetColor.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        planetColor.setOpaque(true);
+        planetColor.setPreferredSize(new java.awt.Dimension(20, 20));
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -152,12 +164,14 @@ public class PlanetPanel extends javax.swing.JPanel {
                     .add(layout.createSequentialGroup()
                         .add(jLabel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 70, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(nameTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE))
+                        .add(nameTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(planetColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                     .add(layout.createSequentialGroup()
                         .add(jLabel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 70, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(xPositionTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 79, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(yPositionTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 79, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -166,6 +180,7 @@ public class PlanetPanel extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
+                    .add(planetColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(nameTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
@@ -247,6 +262,7 @@ private void velocitySliderChanged(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
             this.massExponentSlider.setValue(exp);
             
             this.nameTextField.setText(this.planet.getName());
+            this.planetColor.setBackground(this.planet.getColor());
         }
     }
 
@@ -267,6 +283,7 @@ private void velocitySliderChanged(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
     private javax.swing.JSlider massSlider;
     private javax.swing.JTextField massTextField;
     private javax.swing.JTextField nameTextField;
+    private javax.swing.JLabel planetColor;
     private javax.swing.JSlider velocitySlider;
     private javax.swing.JTextField xPositionTextField;
     private javax.swing.JTextField yPositionTextField;
