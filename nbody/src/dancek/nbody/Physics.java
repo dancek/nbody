@@ -16,7 +16,7 @@ import javax.swing.JPanel;
  */
 public class Physics implements Runnable {
 
-    private static final int PHYSICS_FPS = 60;
+    private static final int PHYSICS_FPS = 100;
     protected static final double PHYSICS_TIMESTEP = 1.0 / PHYSICS_FPS;
 
     public void run() {
@@ -37,7 +37,7 @@ public class Physics implements Runnable {
         return scheduler.scheduleAtFixedRate(gamePhysics, 0, (long) (1000 * PHYSICS_TIMESTEP), TimeUnit.MILLISECONDS);
     }
 
-    public static ScheduledFuture<?> startPhysics(final World world, final JPanel displayPanel, final JPanel planetPanel) {
+    public static ScheduledFuture<?> startPhysics(final World world, final NbodyPanel nbodyPanel, final JPanel planetPanel) {
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
         Runnable gamePhysics = new Runnable() {
@@ -45,7 +45,7 @@ public class Physics implements Runnable {
                 world.resetAllForces();
                 world.gravitateAll();
                 world.updateAll(PHYSICS_TIMESTEP);
-                displayPanel.repaint();
+                nbodyPanel.repaint();
                 planetPanel.repaint();
             }
         };

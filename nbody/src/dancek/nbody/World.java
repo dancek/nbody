@@ -81,7 +81,7 @@ public class World {
         planet1.addForce(a);
     }
 
-    public ArrayList<Planet> getPhysicalObjects() {
+    public ArrayList<Planet> getPlanets() {
         return this.planets;
     }
 

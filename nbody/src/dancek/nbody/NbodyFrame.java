@@ -9,6 +9,7 @@ import java.awt.event.MouseListener;
 import java.util.concurrent.ScheduledFuture;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 /**
  * Ohjelman ikkuna (JFrame-kehys).
@@ -18,22 +19,28 @@ import javax.swing.JFrame;
 public class NbodyFrame extends JFrame {
 
     private World world;
-    private NbodyPanel panel;
+    private NbodyPanel nbodyPanel;
     private ScheduledFuture<?> simulationHandle;
     private boolean simulationRunning;
     private PlanetPanel planetPanel;
+    private JPanel sidePanel;
 
     public NbodyFrame(World world) {
         Planet panelPlanet = new Planet(0,-100,-250,0,1e10);
         world.addPlanet(panelPlanet);
         this.world = world;
-        this.panel = new NbodyPanel(this.world);
-        this.planetPanel = new PlanetPanel(panelPlanet);
+        this.nbodyPanel = new NbodyPanel(this.world);
+        this.planetPanel = new PlanetPanel(this.nbodyPanel, this.world);
+
+        this.sidePanel = new JPanel();
+        this.sidePanel.setLayout(new BorderLayout());
+        this.sidePanel.add(this.planetPanel, BorderLayout.SOUTH);
+        this.sidePanel.add(new JPanel(), BorderLayout.NORTH);
 
         this.setLayout(new BorderLayout());
 
-        this.add(this.panel, BorderLayout.CENTER);
-        this.add(this.planetPanel, BorderLayout.EAST);
+        this.add(this.nbodyPanel, BorderLayout.CENTER);
+        this.add(this.sidePanel, BorderLayout.EAST);
         this.pack();
 
         this.setTitle("nbody");
@@ -47,9 +54,9 @@ public class NbodyFrame extends JFrame {
         // näytetään ikkuna
         this.setVisible(true);
 
-        this.panel.addMouseListener(new NbodyPanelClickListener());
+        this.nbodyPanel.addMouseListener(new NbodyPanelClickListener());
 
-        this.simulationHandle = Physics.startPhysics(world, this.panel, this.planetPanel);
+        this.simulationHandle = Physics.startPhysics(world, this.nbodyPanel, this.planetPanel);
         this.simulationRunning = true;
     }
     
@@ -59,7 +66,7 @@ public class NbodyFrame extends JFrame {
                 NbodyFrame.this.simulationHandle.cancel(false);
                 NbodyFrame.this.simulationRunning = false;
             } else {
-                NbodyFrame.this.simulationHandle = Physics.startPhysics(world, NbodyFrame.this.panel, NbodyFrame.this.planetPanel);
+                NbodyFrame.this.simulationHandle = Physics.startPhysics(world, NbodyFrame.this.nbodyPanel, NbodyFrame.this.planetPanel);
                 NbodyFrame.this.simulationRunning = true;
             }
         }
