@@ -35,3 +35,10 @@ YHTEENSÄ 20h
 13.12. 6h: sivupaneeli
 
 14.12. 3h: sivupaneeli (ja liittyvät toiminnot), bugikorjaus, verletin kehitys
+
+15.12. 7h: sivupaneeli (ja liittyvät toiminnot)
+	- värit
+	- planeettalista ja next-nappi
+	- ongelma: swing isn't thread-safe
+	
+YHTEENSÄ 49h

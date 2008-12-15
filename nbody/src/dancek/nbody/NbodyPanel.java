@@ -18,6 +18,7 @@ public class NbodyPanel extends JPanel {
     private World world;
     private int xOffset;
     private int yOffset;
+    private double scalingFactor;
 
     public NbodyPanel(World world) {
         this.world = world;
@@ -25,6 +26,15 @@ public class NbodyPanel extends JPanel {
         this.setPreferredSize(PANEL_SIZE);
         this.xOffset = PANEL_SIZE.width / 2;
         this.yOffset = PANEL_SIZE.height / 2;
+        this.scalingFactor = 1.0;
+    }
+    
+    public double getScalingFactor() {
+        return this.scalingFactor;
+    }
+    
+    protected void setScalingFactor(double factor) {
+        this.scalingFactor = factor;
     }
 
     public void paintComponent(Graphics g) {
@@ -34,9 +44,9 @@ public class NbodyPanel extends JPanel {
         g2d.clearRect(0, 0, this.getWidth(), this.getHeight());
 
         for (Planet planet : this.world.getPlanets()) {
-            int x = (int) planet.getPosition().x + this.xOffset;
-            int y = (int) planet.getPosition().y + this.yOffset;
-            int size = planet.getSize();
+            int x = (int) (planet.getPosition().x * this.scalingFactor) + this.xOffset;
+            int y = (int) (planet.getPosition().y * this.scalingFactor) + this.yOffset;
+            int size = (int) Math.ceil(planet.getSize() * this.scalingFactor);
 
             g2d.setColor(planet.getColor());
 

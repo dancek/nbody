@@ -61,4 +61,8 @@ public class Planet extends PhysicalObject {
         if (this.size < 3)
             this.size = 3;
     }
+    
+    public String toString() {
+        return this.getName();
+    }
 }

@@ -134,9 +134,9 @@ public class World {
         // World.stabilize(earth, moon);
         World.stabilize(sun, earth);
 
-        world.addPlanet(earth);
-         world.addPlanet(moon);
         world.addPlanet(sun);
+        world.addPlanet(earth);
+        world.addPlanet(moon);
 
         return world;
     }

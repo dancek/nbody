@@ -16,7 +16,7 @@ import javax.swing.JPanel;
  */
 public class Physics implements Runnable {
 
-    private static final int PHYSICS_FPS = 100;
+    private static final int PHYSICS_FPS = 60;
     protected static final double PHYSICS_TIMESTEP = 1.0 / PHYSICS_FPS;
 
     public void run() {

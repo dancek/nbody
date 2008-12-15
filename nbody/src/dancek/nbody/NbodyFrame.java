@@ -30,17 +30,12 @@ public class NbodyFrame extends JFrame {
         world.addPlanet(panelPlanet);
         this.world = world;
         this.nbodyPanel = new NbodyPanel(this.world);
-        this.planetPanel = new PlanetPanel(this.nbodyPanel, this.world);
-
-        this.sidePanel = new JPanel();
-        this.sidePanel.setLayout(new BorderLayout());
-        this.sidePanel.add(this.planetPanel, BorderLayout.SOUTH);
-        this.sidePanel.add(new JPanel(), BorderLayout.NORTH);
+        this.planetPanel = new PlanetPanel(this, this.world);
 
         this.setLayout(new BorderLayout());
 
         this.add(this.nbodyPanel, BorderLayout.CENTER);
-        this.add(this.sidePanel, BorderLayout.EAST);
+        this.add(this.planetPanel, BorderLayout.EAST);
         this.pack();
 
         this.setTitle("nbody");
@@ -56,8 +51,12 @@ public class NbodyFrame extends JFrame {
 
         this.nbodyPanel.addMouseListener(new NbodyPanelClickListener());
 
-        this.simulationHandle = Physics.startPhysics(world, this.nbodyPanel, this.planetPanel);
+        this.simulationHandle = Physics.startPhysics(this.world, this.nbodyPanel, this.planetPanel);
         this.simulationRunning = true;
+    }
+    
+    public void updateSimulationView() {
+        this.nbodyPanel.repaint();
     }
     
     private class NbodyPanelClickListener implements MouseListener {
@@ -66,8 +65,9 @@ public class NbodyFrame extends JFrame {
                 NbodyFrame.this.simulationHandle.cancel(false);
                 NbodyFrame.this.simulationRunning = false;
             } else {
-                NbodyFrame.this.simulationHandle = Physics.startPhysics(world, NbodyFrame.this.nbodyPanel, NbodyFrame.this.planetPanel);
-                NbodyFrame.this.simulationRunning = true;
+              NbodyFrame.this.simulationHandle = Physics.startPhysics(NbodyFrame.this.world, NbodyFrame.this.nbodyPanel, NbodyFrame.this.planetPanel);
+//              NbodyFrame.this.simulationHandle = Physics.startPhysics(NbodyFrame.this.world);
+              NbodyFrame.this.simulationRunning = true;
             }
         }
 
