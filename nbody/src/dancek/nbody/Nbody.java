@@ -2,6 +2,8 @@ package dancek.nbody;
 
 import java.util.Random;
 
+import javax.swing.SwingUtilities;
+
 /**
  * Pääluokka, joka sisältää main-metodin. Jos teen pelistä appletin, yritän
  * laittaa tämän luokan käynnistämään myös sen.
@@ -18,6 +20,10 @@ public class Nbody {
      * @param args komentoriviargumentit
      */
     public static void main(String[] args) {
-        new NbodyFrame(World.quickEarthAndMoon());
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new NbodyFrame(World.quickEarthAndMoon());
+            }
+        });
     }
 }

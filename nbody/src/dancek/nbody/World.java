@@ -24,6 +24,10 @@ public class World {
     public void addPlanet(Planet planet) {
         this.planets.add(planet);
     }
+    
+    public void removePlanet(Planet planet) {
+        this.planets.remove(planet);
+    }
 
     public void resetAllForces() {
         ListIterator<Planet> itr = this.planets.listIterator();

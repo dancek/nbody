@@ -8,13 +8,12 @@ import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 
 /**
- * Tämä luokka sisältää käyttöliittymän sivupaneelin.
- * HUOM: LUOKKA SISÄLTÄÄ AUTOMAATTISESTI GENEROITUA KOODIA.
- * Tarkemmin sanottuna initComponents-metodi ja siihen liittyvät
- * komponenttiattribuutit ovat NetBeans 6.1:n graafisen GUI-editorin
- * tuotosta. Olen toki käyttänyt editoria itse (mikä vaatii kyllä
- * myöskin vaivannäköä). Tapahtumakäsittelijät
- * ja muu luokan toimintalogiikka on kirjoitettu käsin.
+ * Tämä luokka sisältää käyttöliittymän sivupaneelin. HUOM: LUOKKA SISÄLTÄÄ
+ * AUTOMAATTISESTI GENEROITUA KOODIA. Tarkemmin sanottuna initComponents-metodi
+ * ja siihen liittyvät komponenttiattribuutit ovat NetBeans 6.1:n graafisen
+ * GUI-editorin tuotosta. Olen toki käyttänyt editoria itse (mikä vaatii kyllä
+ * myöskin vaivannäköä). Tapahtumakäsittelijät ja muu luokan toimintalogiikka on
+ * kirjoitettu käsin.
  * 
  * @author Hannu Hartikainen
  */
@@ -51,11 +50,11 @@ public class PlanetPanel extends javax.swing.JPanel {
         }
     }
 
-    /** 
-     * Metodi, joka asettelee komponentit paikoilleen.
-     * HUOM! TÄMÄ METODI EI OLE MINUN KIRJOITTAMANI, vaan NetBeansin
-     * GUI-editorin generoima.
+    /**
+     * Metodi, joka asettelee komponentit paikoilleen. HUOM! TÄMÄ METODI EI OLE
+     * MINUN KIRJOITTAMANI, vaan NetBeansin GUI-editorin generoima.
      */
+    // <editor-fold defaultstate="collapsed"
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -77,6 +76,8 @@ public class PlanetPanel extends javax.swing.JPanel {
         jSeparator2 = new javax.swing.JSeparator();
         planetListBox = new javax.swing.JComboBox();
         nextPlanetButton = new javax.swing.JButton();
+        jSeparator3 = new javax.swing.JSeparator();
+        jButton1 = new javax.swing.JButton();
 
         setBorder(javax.swing.BorderFactory.createTitledBorder("Planet"));
         setMinimumSize(new java.awt.Dimension(300, 400));
@@ -183,6 +184,13 @@ public class PlanetPanel extends javax.swing.JPanel {
             }
         });
 
+        jButton1.setText("Remove planet");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removePlanetButtonClicked(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -190,6 +198,9 @@ public class PlanetPanel extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(layout.createSequentialGroup()
+                        .add(jButton1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)
+                        .addContainerGap())
                     .add(layout.createSequentialGroup()
                         .add(jSeparator2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
                         .addContainerGap())
@@ -232,6 +243,9 @@ public class PlanetPanel extends javax.swing.JPanel {
                         .add(planetListBox, 0, 128, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(nextPlanetButton)
+                        .addContainerGap())
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(jSeparator3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
@@ -271,75 +285,101 @@ public class PlanetPanel extends javax.swing.JPanel {
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                     .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(directionSlider, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(129, 129, 129))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jSeparator3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jButton1)
+                .add(73, 73, 73))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-private void massSliderChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_massSliderChanged
-    double mass = 0.1 * this.massSlider.getValue() * Math.pow(10, this.massExponentSlider.getValue());
-    this.massTextField.setText(String.format("%.1e", mass));
-    this.planet.setMass(mass);
-    this.updateVisuals();
-}//GEN-LAST:event_massSliderChanged
+private void removePlanetButtonClicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removePlanetButtonClicked
+    Planet removedPlanet = (Planet) this.planetListBox.getSelectedItem();
+    this.world.removePlanet(removedPlanet);
+    this.planetListBox.removeItem(removedPlanet);
+}//GEN-LAST:event_removePlanetButtonClicked
 
-private void massTextFieldChanged(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_massTextFieldChanged
-    // toimitaan vain, jos painettiin enteriä
-    if (evt.getKeyChar() != '\n') {
-        return;
-    }
-    try {
-        double mass = Double.parseDouble(this.massTextField.getText());
+    private void massSliderChanged(javax.swing.event.ChangeEvent evt) {// GEN-
+        // FIRST:
+        // event_massSliderChanged
+        double mass = 0.1 * this.massSlider.getValue() * Math.pow(10, this.massExponentSlider.getValue());
+        this.massTextField.setText(String.format("%.1e", mass));
         this.planet.setMass(mass);
-        this.updateAllFields = true;
         this.updateVisuals();
-    } catch (NumberFormatException e) {
-        // ei haittaa mitään, tällöin ei vain tehdä mitään arvoille.
-        return;
-    }
-}//GEN-LAST:event_massTextFieldChanged
+    }// GEN-LAST:event_massSliderChanged
 
-private void nameTextFieldChanged(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nameTextFieldChanged
-    // toimitaan vain, jos painettiin enteriä
-    if (evt.getKeyChar() != '\n') {
-        return;
-    }
+    private void massTextFieldChanged(java.awt.event.KeyEvent evt) {            
+        // event_massTextFieldChanged
+        // toimitaan vain, jos painettiin enteriä
+        if (evt.getKeyChar() != '\n') {
+            return;
+        }
+        try {
+            double mass = Double.parseDouble(this.massTextField.getText());
+            this.planet.setMass(mass);
+            this.updateAllFields = true;
+            this.updateVisuals();
+        } catch (NumberFormatException e) {
+            // ei haittaa mitään, tällöin ei vain tehdä mitään arvoille.
+            return;
+        }
+    }// GEN-LAST:event_massTextFieldChanged
 
-    this.planet.setName(this.nameTextField.getText());
-    this.updateAllFields = true;
-}//GEN-LAST:event_nameTextFieldChanged
+    private void nameTextFieldChanged(java.awt.event.KeyEvent evt) {            
+        // event_nameTextFieldChanged
+        // toimitaan vain, jos painettiin enteriä
+        if (evt.getKeyChar() != '\n') {
+            return;
+        }
 
-private void velocitySliderChanged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_velocitySliderChanged
-    this.planet.setVelocityPolar(this.velocitySlider.getValue(), this.directionSlider.getValue() / 1000.0);
-}//GEN-LAST:event_velocitySliderChanged
-
-private void planetColorButtonClicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_planetColorButtonClicked
-    Color newColor = JColorChooser.showDialog(this, "Choose planet color", this.planet.getColor());
-
-    if (newColor != null) {
-        this.planet.setColor(newColor);
+        this.planet.setName(this.nameTextField.getText());
         this.updateAllFields = true;
-        this.updateVisuals();
-    }
-}//GEN-LAST:event_planetColorButtonClicked
+    }// GEN-LAST:event_nameTextFieldChanged
 
-private void planetChangedFromList(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_planetChangedFromList
-    this.setPlanet((Planet) this.planetListBox.getSelectedItem());
-}//GEN-LAST:event_planetChangedFromList
+    private void velocitySliderChanged(java.awt.event.MouseEvent evt) {// GEN-
+        // FIRST:
+        // event_velocitySliderChanged
+        this.planet.setVelocityPolar(this.velocitySlider.getValue(), this.directionSlider.getValue() / 1000.0);
+    }// GEN-LAST:event_velocitySliderChanged
 
-private void nextPlanet(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextPlanet
-    int index = this.planetListBox.getSelectedIndex() + 1; // halutaan seuraava
-    int count = this.planetListBox.getItemCount();
-    
-    // valitaan ensimmäinen jos ollaan viimeisessä
-    // ja poistutaan jos lista on tyhjä
-    if (count == 0) return;
-    else if (count < index + 1) index = 0;
-    
-    this.planetListBox.setSelectedIndex(index);
-    this.setPlanet((Planet) this.planetListBox.getSelectedItem());
-}//GEN-LAST:event_nextPlanet
+    private void planetColorButtonClicked(java.awt.event.ActionEvent evt) {//GEN-
+        // FIRST
+        // :
+        // event_planetColorButtonClicked
+        Color newColor = JColorChooser.showDialog(this, "Choose planet color", this.planet.getColor());
 
-    private void updateComponentValues() {
+        if (newColor != null) {
+            this.planet.setColor(newColor);
+            this.updateAllFields = true;
+            this.updateVisuals();
+        }
+    }// GEN-LAST:event_planetColorButtonClicked
+
+    private void planetChangedFromList(java.awt.event.ActionEvent evt) {// GEN-
+        // FIRST
+        // :
+        // event_planetChangedFromList
+        this.setPlanet((Planet) this.planetListBox.getSelectedItem());
+    }// GEN-LAST:event_planetChangedFromList
+
+    private void nextPlanet(java.awt.event.ActionEvent evt) {// GEN-FIRST:
+        // event_nextPlanet
+        int index = this.planetListBox.getSelectedIndex() + 1; // halutaan
+        // seuraava
+        int count = this.planetListBox.getItemCount();
+
+        // valitaan ensimmäinen jos ollaan viimeisessä
+        // ja poistutaan jos lista on tyhjä
+        if (count == 0)
+            return;
+        else if (count < index + 1)
+            index = 0;
+
+        this.planetListBox.setSelectedIndex(index);
+        this.setPlanet((Planet) this.planetListBox.getSelectedItem());
+    }// GEN-LAST:event_nextPlanet
+
+    protected void updateComponentValues() {
         this.xPositionTextField.setText(String.format("%.2f", this.planet.getPosition().x));
         this.yPositionTextField.setText(String.format("%.2f", this.planet.getPosition().y));
 
@@ -368,14 +408,16 @@ private void nextPlanet(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextP
         this.nbodyFrame.updateSimulationView();
     }
 
-    public void paintComponent(Graphics g) {
-        this.updateComponentValues();
-        super.paintComponent(g);
-    }
+//    public void paintBorder(Graphics g) {
+//        super.paintBorder(g);
+//        this.updateComponentValues();
+//    }
+
     // HUOM! NÄMÄ ATTRIBUUTIT OVAT NETBEANSIN AUTOMAATTISESTI
     // GENEROIMIA EIVÄTKÄ MINUN KIRJOITTAMIANI.
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JSlider directionSlider;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -383,6 +425,7 @@ private void nextPlanet(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextP
     private javax.swing.JLabel jLabel5;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSlider massExponentSlider;
     private javax.swing.JSlider massSlider;
     private javax.swing.JTextField massTextField;
@@ -394,4 +437,22 @@ private void nextPlanet(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextP
     private javax.swing.JTextField xPositionTextField;
     private javax.swing.JTextField yPositionTextField;
     // End of variables declaration//GEN-END:variables
+    private Planet pendingPlanet;
+
+    /**
+     * @param pendingPlanet
+     */
+    public void setPendingPlanet(Planet pendingPlanet) {
+        if (pendingPlanet == null) {
+            this.pendingPlanet = null;
+            return;
+        }
+
+        if (this.pendingPlanet != null)
+            this.planetListBox.removeItem(pendingPlanet);
+
+        this.pendingPlanet = pendingPlanet;
+        this.planetListBox.addItem(pendingPlanet);
+        this.planetListBox.setSelectedItem(pendingPlanet);
+    }
 }

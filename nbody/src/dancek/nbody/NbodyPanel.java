@@ -19,6 +19,7 @@ public class NbodyPanel extends JPanel {
     private int xOffset;
     private int yOffset;
     private double scalingFactor;
+    private Planet pendingPlanet;
 
     public NbodyPanel(World world) {
         this.world = world;
@@ -28,11 +29,11 @@ public class NbodyPanel extends JPanel {
         this.yOffset = PANEL_SIZE.height / 2;
         this.scalingFactor = 1.0;
     }
-    
+
     public double getScalingFactor() {
         return this.scalingFactor;
     }
-    
+
     protected void setScalingFactor(double factor) {
         this.scalingFactor = factor;
     }
@@ -44,15 +45,37 @@ public class NbodyPanel extends JPanel {
         g2d.clearRect(0, 0, this.getWidth(), this.getHeight());
 
         for (Planet planet : this.world.getPlanets()) {
-            int x = (int) (planet.getPosition().x * this.scalingFactor) + this.xOffset;
-            int y = (int) (planet.getPosition().y * this.scalingFactor) + this.yOffset;
-            int size = (int) Math.ceil(planet.getSize() * this.scalingFactor);
-
-            g2d.setColor(planet.getColor());
-
-            // vähennetään koordinaateista ympyrän säde, jotta piirros tulee
-            // keskikohdan mukaan.
-            g2d.fillOval(x - size / 2, y - size / 2, size, size);
+            this.drawPlanet(g2d, planet);
         }
+
+        if (this.pendingPlanet != null)
+            this.drawPlanet(g2d, this.pendingPlanet);
+    }
+
+    private void drawPlanet(Graphics2D g2d, Planet planet) {
+        int x = (int) (planet.getPosition().x * this.scalingFactor) + this.xOffset;
+        int y = (int) (planet.getPosition().y * this.scalingFactor) + this.yOffset;
+        int size = (int) Math.ceil(planet.getSize() * this.scalingFactor);
+
+        g2d.setColor(planet.getColor());
+
+        // vähennetään koordinaateista ympyrän säde, jotta piirros tulee
+        // keskikohdan mukaan.
+        g2d.fillOval(x - size / 2, y - size / 2, size, size);
+    }
+
+    public Planet addPendingPlanet(int x, int y) {
+        double planetX = (x - this.xOffset) / this.scalingFactor;
+        double planetY = (y - this.yOffset) / this.scalingFactor;
+        this.pendingPlanet = new Planet(planetX, planetY);
+        return this.pendingPlanet;
+    }
+
+    public void setPendingPlanetVelocity(int x, int y) {
+        double xVelocity = (x - this.xOffset) / this.scalingFactor - this.pendingPlanet.getPosition().x;
+        double yVelocity = (y - this.yOffset) / this.scalingFactor - this.pendingPlanet.getPosition().y;
+        this.pendingPlanet.setVelocity(xVelocity, yVelocity);
+        this.world.addPlanet(pendingPlanet);
+        this.pendingPlanet = null;
     }
 }

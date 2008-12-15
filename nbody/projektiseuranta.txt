@@ -42,3 +42,5 @@ YHTEENSÄ 20h
 	- ongelma: swing isn't thread-safe
 	
 YHTEENSÄ 49h
+
+15.12. 2h: planeettojen lisäys ja poisto, gui-kehitys
