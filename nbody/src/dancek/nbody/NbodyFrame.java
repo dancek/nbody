@@ -22,7 +22,6 @@ public class NbodyFrame extends JFrame {
     private ScheduledFuture<?> simulationHandle;
     private boolean simulationRunning;
     private PlanetPanel planetPanel;
-    private JPanel sidePanel;
     public boolean waitingForVelocity;
     private JLabel statusLabel;
 
@@ -102,10 +101,26 @@ public class NbodyFrame extends JFrame {
         return menubar;
     }
 
-    public void updateSimulationView() {
+    protected NbodyPanel getNbodyPanel() {
+        return this.nbodyPanel;
+    }
+    
+    protected void updateSimulationView() {
         this.nbodyPanel.repaint();
     }
 
+    protected boolean toggleSimulation() {
+      if (this.simulationRunning) {
+            this.simulationHandle.cancel(false);
+            this.simulationRunning = false;
+            return false;
+        } else {
+            this.simulationHandle = Physics.startPhysics(this.world, this.nbodyPanel, this.planetPanel);
+            this.simulationRunning = true;
+            return true;
+        }
+    }
+    
     private class NbodyPanelClickListener implements MouseListener {
         public void mouseClicked(MouseEvent e) {
             if (waitingForVelocity) {
@@ -120,14 +135,6 @@ public class NbodyFrame extends JFrame {
                 planetPanel.setPendingPlanet(pendingPlanet);
                 waitingForVelocity = true;
             }
-
-//            if (simulationRunning) {
-//                simulationHandle.cancel(false);
-//                simulationRunning = false;
-//            } else {
-//                simulationHandle = Physics.startPhysics(world, nbodyPanel, planetPanel);
-//                simulationRunning = true;
-//            }
         }
 
         public void mouseEntered(MouseEvent e) {

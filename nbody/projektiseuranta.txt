@@ -43,4 +43,4 @@ YHTEENSÄ 20h
 	
 YHTEENSÄ 49h
 
-15.12. 2h: planeettojen lisäys ja poisto, gui-kehitys
+15.12. 5h: planeettojen lisäys ja poisto, gui-kehitys (sivupaneeli uusiksi)
