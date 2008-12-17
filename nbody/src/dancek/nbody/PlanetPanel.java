@@ -81,7 +81,7 @@ public class PlanetPanel extends javax.swing.JPanel {
         removePlanetButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         startStopButton = new javax.swing.JToggleButton();
-        zoomScrollBar = new javax.swing.JScrollBar();
+        jScrollBar1 = new javax.swing.JScrollBar();
 
         setMinimumSize(new java.awt.Dimension(300, 400));
 
@@ -306,9 +306,9 @@ public class PlanetPanel extends javax.swing.JPanel {
             }
         });
 
-        zoomScrollBar.setMinimum(1);
-        zoomScrollBar.setOrientation(javax.swing.JScrollBar.HORIZONTAL);
-        zoomScrollBar.addAdjustmentListener(new java.awt.event.AdjustmentListener() {
+        jScrollBar1.setMinimum(1);
+        jScrollBar1.setOrientation(javax.swing.JScrollBar.HORIZONTAL);
+        jScrollBar1.addAdjustmentListener(new java.awt.event.AdjustmentListener() {
             public void adjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {
                 zoomLevelChanged(evt);
             }
@@ -322,7 +322,7 @@ public class PlanetPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .add(startStopButton)
                 .add(18, 18, 18)
-                .add(zoomScrollBar, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(jScrollBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(49, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -330,7 +330,7 @@ public class PlanetPanel extends javax.swing.JPanel {
             .add(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(zoomScrollBar, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 15, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jScrollBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 15, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(startStopButton))
                 .addContainerGap(123, Short.MAX_VALUE))
         );
@@ -362,7 +362,7 @@ private void startStopButtonClicked(java.awt.event.ActionEvent evt) {//GEN-FIRST
 }//GEN-LAST:event_startStopButtonClicked
 
 private void zoomLevelChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:event_zoomLevelChanged
-    this.nbodyFrame.getNbodyPanel().setScalingFactor(this.zoomScrollBar.getValue() / 100.0);
+    this.nbodyFrame.getNbodyPanel().setScalingFactor(this.jScrollBar1.getValue() / 100.0);
 }//GEN-LAST:event_zoomLevelChanged
 
     private void massSliderChanged(javax.swing.event.ChangeEvent evt) {// GEN-
@@ -490,6 +490,7 @@ private void zoomLevelChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:e
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollBar jScrollBar1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
@@ -505,7 +506,6 @@ private void zoomLevelChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:e
     private javax.swing.JSlider velocitySlider;
     private javax.swing.JTextField xPositionTextField;
     private javax.swing.JTextField yPositionTextField;
-    private javax.swing.JScrollBar zoomScrollBar;
     // End of variables declaration//GEN-END:variables
     private Planet pendingPlanet;
 

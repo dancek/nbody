@@ -78,4 +78,18 @@ public class NbodyPanel extends JPanel {
         this.world.addPlanet(pendingPlanet);
         this.pendingPlanet = null;
     }
+
+    protected void moveView(int x, int y) {
+        this.xOffset += x;
+        this.yOffset += y;
+    }
+
+    /**
+     * @param x
+     * @param y
+     * @param wheelRotation
+     */
+    protected void zoom(int x, int y, int wheelRotation) {
+        this.scalingFactor *= (wheelRotation > 0) ? 1.0 / (1 + wheelRotation / 10.0) : 1 - wheelRotation / 10.0;
+    }
 }

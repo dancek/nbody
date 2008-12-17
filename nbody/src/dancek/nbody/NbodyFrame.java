@@ -6,6 +6,9 @@ package dancek.nbody;
 import java.awt.BorderLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.concurrent.ScheduledFuture;
 
 import javax.swing.*;
@@ -24,6 +27,10 @@ public class NbodyFrame extends JFrame {
     private PlanetPanel planetPanel;
     public boolean waitingForVelocity;
     private JLabel statusLabel;
+    private NbodyPanelMouseListener nbodyPanelMouseListener;
+    
+    private int mouseDragLastX;
+    private int mouseDragLastY;
 
     public NbodyFrame(World world) {
         this.setJMenuBar(this.createMenuBar());
@@ -53,7 +60,10 @@ public class NbodyFrame extends JFrame {
         // näytetään ikkuna
         this.setVisible(true);
 
-        this.nbodyPanel.addMouseListener(new NbodyPanelClickListener());
+        this.nbodyPanelMouseListener = new NbodyPanelMouseListener();
+        this.nbodyPanel.addMouseListener(this.nbodyPanelMouseListener);
+        this.nbodyPanel.addMouseMotionListener(this.nbodyPanelMouseListener);
+        this.nbodyPanel.addMouseWheelListener(this.nbodyPanelMouseListener);
 
         this.simulationHandle = Physics.startPhysics(this.world, this.nbodyPanel, this.planetPanel);
         this.simulationRunning = true;
@@ -121,7 +131,7 @@ public class NbodyFrame extends JFrame {
         }
     }
     
-    private class NbodyPanelClickListener implements MouseListener {
+    private class NbodyPanelMouseListener implements MouseListener, MouseMotionListener, MouseWheelListener {
         public void mouseClicked(MouseEvent e) {
             if (waitingForVelocity) {
                 nbodyPanel.setPendingPlanetVelocity(e.getX(), e.getY());
@@ -144,9 +154,24 @@ public class NbodyFrame extends JFrame {
         }
 
         public void mousePressed(MouseEvent e) {
+            mouseDragLastX = e.getX();
+            mouseDragLastY = e.getY();
         }
 
         public void mouseReleased(MouseEvent e) {
+        }
+
+        public void mouseDragged(MouseEvent e) {
+            nbodyPanel.moveView(e.getX() - mouseDragLastX, e.getY() - mouseDragLastY);
+            mouseDragLastX = e.getX();
+            mouseDragLastY = e.getY();
+        }
+
+        public void mouseMoved(MouseEvent e) {
+        }
+
+        public void mouseWheelMoved(MouseWheelEvent e) {
+            nbodyPanel.zoom(e.getX(), e.getY(), e.getWheelRotation());
         }
     }
 }
