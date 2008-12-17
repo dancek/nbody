@@ -4,6 +4,8 @@
 package dancek.nbody;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -14,7 +16,8 @@ import java.util.concurrent.ScheduledFuture;
 import javax.swing.*;
 
 /**
- * Ohjelman ikkuna (JFrame-kehys).
+ * Ohjelman ikkuna (JFrame-kehys). Sisältää piirtopaneelin ja sivupaneelin ja
+ * huolehtii piirtopaneelin eventeistä (sisäluokalla).
  * 
  * @author Hannu Hartikainen
  */
@@ -75,46 +78,48 @@ public class NbodyFrame extends JFrame {
     private JMenuBar createMenuBar() {
         JMenuBar menubar = new JMenuBar();
 
-        JMenu gameMenu = new JMenu("gameMenu");
-        JMenu settingsMenu = new JMenu(("settingsMenu"));
+        JMenu worldMenu = new JMenu("World");
+        JMenu helpMenu = new JMenu(("Help"));
 
-        JMenuItem newGame = new JMenuItem(("newGame"));
-        JMenuItem selectMap = new JMenuItem(("selectMap"));
-        JMenuItem highScores = new JMenuItem(("highScores"));
-        JMenuItem quit = new JMenuItem(("quit"));
+        JMenuItem loadWorld = new JMenuItem(("Load"));
+        JMenuItem saveWorld = new JMenuItem(("Save"));
+        JMenuItem newWorld = new JMenuItem(("New"));
+        JMenuItem quit = new JMenuItem(("Quit"));
 
-        JMenuItem changeLanguage = new JMenuItem(("changeLanguage"));
+        JMenuItem about = new JMenuItem(("About..."));
 
-        // newGame.addActionListener(new NewGameListener());
-        // selectMap.addActionListener(new SelectMapListener());
-        // highScores.addActionListener(new HighScoreListener());
-        // quit.addActionListener(new QuitListener());
-        //
-        // changeLanguage.addActionListener(new ChangeLanguageListener());
+        newWorld.setAccelerator(KeyStroke.getKeyStroke("F2"));
 
-        newGame.setAccelerator(KeyStroke.getKeyStroke("F2"));
+        saveWorld.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                saveWorld();
+            }
+        });
 
-        menubar.add(gameMenu);
-        menubar.add(settingsMenu);
+        menubar.add(worldMenu);
+        menubar.add(helpMenu);
 
-        gameMenu.add(newGame);
-        gameMenu.add(selectMap);
-        gameMenu.addSeparator();
-        gameMenu.add(highScores);
-        gameMenu.addSeparator();
-        gameMenu.add(quit);
+        worldMenu.add(newWorld);
+        worldMenu.addSeparator();
+        worldMenu.add(loadWorld);
+        worldMenu.add(saveWorld);
+        worldMenu.addSeparator();
+        worldMenu.add(quit);
 
-        settingsMenu.add(changeLanguage);
+        helpMenu.add(about);
 
         return menubar;
     }
 
-    protected NbodyPanel getNbodyPanel() {
-        return this.nbodyPanel;
+    /**
+     * Metodi, jota kutsutaan tallennus-valikkoitemistä.
+     */
+    protected void saveWorld() {
+        new JFileChooser();
     }
 
-    protected void updateSimulationView() {
-        this.nbodyPanel.repaint();
+    protected NbodyPanel getNbodyPanel() {
+        return this.nbodyPanel;
     }
 
     protected boolean toggleSimulation() {
@@ -127,17 +132,25 @@ public class NbodyFrame extends JFrame {
         }
     }
 
+    /**
+     * Hiirikuuntelija, joka kerää klikkaukset, liikkeet ja rullan liikkeet.
+     * Sisältää osan päheyslogiikasta (tm); NbodyPanel sisältää loput.
+     * 
+     * @author Hannu Hartikainen
+     */
     private class NbodyPanelMouseListener implements MouseListener, MouseMotionListener, MouseWheelListener {
         public void mouseClicked(MouseEvent e) {
+            // jos planeetan lisäys kesken, klikkaamalla tehdään nopeusvektori
             if (world.hasPendingPlanet()) {
                 nbodyPanel.setPendingPlanetVelocity(e.getX(), e.getY());
-                planetPanel.setPendingPlanet(null);
                 return;
             }
 
+            // tuplaklikkauksella lisätään planeetta
             if (e.getClickCount() == 2) {
                 Planet pendingPlanet = nbodyPanel.addPendingPlanet(e.getX(), e.getY());
-                planetPanel.setPendingPlanet(pendingPlanet);
+                planetPanel.updatePlanetList();
+                planetPanel.setPlanet(pendingPlanet);
             }
         }
 
@@ -148,6 +161,7 @@ public class NbodyFrame extends JFrame {
         }
 
         public void mousePressed(MouseEvent e) {
+            // valmistaudutaan raahaukseen tallentamalla ekat koordinaatit
             mouseDragLastX = e.getX();
             mouseDragLastY = e.getY();
         }
@@ -156,18 +170,23 @@ public class NbodyFrame extends JFrame {
         }
 
         public void mouseDragged(MouseEvent e) {
+            // siirretään näkymää ja tallennetaan koordinaatit
             nbodyPanel.moveView(e.getX() - mouseDragLastX, e.getY() - mouseDragLastY);
             mouseDragLastX = e.getX();
             mouseDragLastY = e.getY();
         }
 
         public void mouseMoved(MouseEvent e) {
+            // jos planeetan asettaminen on kesken, ilmoitetaan koordinaatit
+            // vektorin piirtoa varten
             if (world.hasPendingPlanet())
                 nbodyPanel.setMouse(e.getX(), e.getY());
         }
 
         public void mouseWheelMoved(MouseWheelEvent e) {
+            // kutsutaan zoomausmetodia
             nbodyPanel.zoom(e.getX(), e.getY(), e.getWheelRotation());
+            planetPanel.updateZoom();
         }
     }
 }

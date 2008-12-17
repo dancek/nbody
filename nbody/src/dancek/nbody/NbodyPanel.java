@@ -21,7 +21,7 @@ public class NbodyPanel extends JPanel {
      */
     private static final double MOUSE_WHEEL_FACTOR = 10.0;
     private static final Dimension PANEL_SIZE = new Dimension(700, 700);
-    private static final Color VECTOR_COLOR = Color.white;
+    private static final Color VECTOR_COLOR = Color.gray;
 
     private World world;
     private int xOffset;

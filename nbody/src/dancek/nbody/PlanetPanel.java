@@ -1,11 +1,11 @@
 package dancek.nbody;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.util.ArrayList;
+
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JColorChooser;
-import javax.swing.JDialog;
 
 /**
  * Tämä luokka sisältää käyttöliittymän sivupaneelin. HUOM: LUOKKA SISÄLTÄÄ
@@ -37,14 +37,14 @@ public class PlanetPanel extends javax.swing.JPanel {
 
     public void setPlanet(Planet planet) {
         this.planet = planet;
+        this.planetListBox.getModel().setSelectedItem(planet);
         this.updateAllFields = true;
         this.updateComponentValues();
     }
 
     public void setWorld(World world) {
         this.world = world;
-        this.planetComboBoxModel = new DefaultComboBoxModel(this.world.getPlanets().toArray());
-        this.planetListBox.setModel(this.planetComboBoxModel);
+        this.updatePlanetList();
         if (!this.world.getPlanets().isEmpty()) {
             this.setPlanet(this.world.getPlanets().get(0));
         }
@@ -82,7 +82,11 @@ public class PlanetPanel extends javax.swing.JPanel {
         removeOtherPlanetsButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         startStopButton = new javax.swing.JToggleButton();
+        zoomComboBox = new javax.swing.JComboBox();
+        jLabel6 = new javax.swing.JLabel();
+        jSeparator4 = new javax.swing.JSeparator();
 
+        setAutoscrolls(true);
         setMinimumSize(new java.awt.Dimension(300, 400));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Planet"));
@@ -257,7 +261,7 @@ public class PlanetPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(nextPlanetButton)
-                    .add(planetListBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 35, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(planetListBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jSeparator2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .add(13, 13, 13)
@@ -299,12 +303,24 @@ public class PlanetPanel extends javax.swing.JPanel {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("View"));
 
-        startStopButton.setText("Start/Stop");
+        startStopButton.setText("Pause");
         startStopButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 startStopButtonClicked(evt);
             }
         });
+
+        zoomComboBox.setEditable(true);
+        zoomComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "0.5", "1.0", "2.0" }));
+        zoomComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                zoomBoxChanged(evt);
+            }
+        });
+
+        jLabel6.setText("Zoom:");
+
+        jSeparator4.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -313,14 +329,25 @@ public class PlanetPanel extends javax.swing.JPanel {
             .add(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(startStopButton)
-                .addContainerGap(163, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jSeparator4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jLabel6)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(zoomComboBox, 0, 100, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(startStopButton)
-                .addContainerGap(66, Short.MAX_VALUE))
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                    .add(jSeparator4)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                        .add(startStopButton)
+                        .add(zoomComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(jLabel6)))
+                .addContainerGap())
         );
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
@@ -335,27 +362,41 @@ public class PlanetPanel extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(47, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-private void removePlanetButtonClicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removePlanetButtonClicked
+private void zoomBoxChanged(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomBoxChanged
+        try {
+            double zoom = Double.parseDouble((String) this.zoomComboBox.getSelectedItem());
+            this.nbodyFrame.getNbodyPanel().setScalingFactor(zoom);
+        } catch (NumberFormatException e) {
+            // ei haittaa mitään, tällöin ei vain tehdä mitään
+            return;
+        }
+
+}//GEN-LAST:event_zoomBoxChanged
+
+private void removePlanetButtonClicked(java.awt.event.ActionEvent evt) {
     Planet removedPlanet = (Planet) this.planetListBox.getSelectedItem();
     this.world.removePlanet(removedPlanet);
     this.planetListBox.removeItem(removedPlanet);
-}//GEN-LAST:event_removePlanetButtonClicked
+}
 
-private void startStopButtonClicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startStopButtonClicked
-    this.nbodyFrame.toggleSimulation();
-}//GEN-LAST:event_startStopButtonClicked
-
-private void removeOtherPlanetsButtonClicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeOtherPlanetsButtonClicked
-    for (Planet p : this.world.getPlanets()) {
-        if (!p.equals(this.planet)) {
-            this.world.removePlanet(p);
-        }
+    private void startStopButtonClicked(java.awt.event.ActionEvent evt) {
+        this.nbodyFrame.toggleSimulation();
     }
-}//GEN-LAST:event_removeOtherPlanetsButtonClicked
+
+    private void removeOtherPlanetsButtonClicked(java.awt.event.ActionEvent evt) {
+        ArrayList<Planet> planetList = (ArrayList<Planet>) this.world.getPlanets().clone();
+        for (Planet p : planetList) {
+            if (!p.equals(this.planet)) {
+                this.world.removePlanet(p);
+            }
+        }
+        this.updatePlanetList();
+    }
 
     private void massSliderChanged(javax.swing.event.ChangeEvent evt) {// GEN-
         // FIRST:
@@ -364,7 +405,7 @@ private void removeOtherPlanetsButtonClicked(java.awt.event.ActionEvent evt) {//
         double mass = 0.1 * this.massSlider.getValue() * Math.pow(10, this.massExponentSlider.getValue());
         this.massTextField.setText(String.format("%.1e", mass));
         this.planet.setMass(mass);
-        this.updateVisuals();
+//        this.updateVisuals();
     }// GEN-LAST:event_massSliderChanged
 
     private void massTextFieldChanged(java.awt.event.KeyEvent evt) {
@@ -377,7 +418,7 @@ private void removeOtherPlanetsButtonClicked(java.awt.event.ActionEvent evt) {//
             double mass = Double.parseDouble(this.massTextField.getText());
             this.planet.setMass(mass);
             this.updateAllFields = true;
-            this.updateVisuals();
+//            this.updateVisuals();
         } catch (NumberFormatException e) {
             // ei haittaa mitään, tällöin ei vain tehdä mitään arvoille.
             return;
@@ -412,7 +453,7 @@ private void removeOtherPlanetsButtonClicked(java.awt.event.ActionEvent evt) {//
         if (newColor != null) {
             this.planet.setColor(newColor);
             this.updateAllFields = true;
-            this.updateVisuals();
+//            this.updateVisuals();
         }
     }// GEN-LAST:event_planetColorButtonClicked
 
@@ -453,6 +494,7 @@ private void removeOtherPlanetsButtonClicked(java.awt.event.ActionEvent evt) {//
         if (!this.directionSlider.getValueIsAdjusting()) {
             this.directionSlider.setValue((int) (this.planet.getDirection() * 1000));
         }
+        
 
         if (this.updateAllFields) {
             this.updateAllFields = false;
@@ -467,30 +509,35 @@ private void removeOtherPlanetsButtonClicked(java.awt.event.ActionEvent evt) {//
         }
     }
 
-    private void updateVisuals() {
-        this.updateComponentValues();
-        this.nbodyFrame.updateSimulationView();
+    protected void updatePlanetList() {
+        this.planetComboBoxModel = new DefaultComboBoxModel(this.world.getPlanets().toArray());
+        this.planetListBox.setModel(this.planetComboBoxModel);
     }
 
-//    public void paintBorder(Graphics g) {
-//        super.paintBorder(g);
+    protected void updateZoom() {
+        this.zoomComboBox.setSelectedItem(String.format("%.4f", this.nbodyFrame.getNbodyPanel().getScalingFactor()));
+    }
+//    private void updateVisuals() {
 //        this.updateComponentValues();
+//        this.nbodyFrame.updateSimulationView();
 //    }
 
     // HUOM! NÄMÄ ATTRIBUUTIT OVAT NETBEANSIN AUTOMAATTISESTI
     // GENEROIMIA EIVÄTKÄ MINUN KIRJOITTAMIANI.
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify                     
     private javax.swing.JSlider directionSlider;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSlider massExponentSlider;
     private javax.swing.JSlider massSlider;
     private javax.swing.JTextField massTextField;
@@ -504,23 +551,5 @@ private void removeOtherPlanetsButtonClicked(java.awt.event.ActionEvent evt) {//
     private javax.swing.JSlider velocitySlider;
     private javax.swing.JTextField xPositionTextField;
     private javax.swing.JTextField yPositionTextField;
-    // End of variables declaration//GEN-END:variables
-    private Planet pendingPlanet;
-
-    /**
-     * @param pendingPlanet
-     */
-    public void setPendingPlanet(Planet pendingPlanet) {
-        if (pendingPlanet == null) {
-            this.pendingPlanet = null;
-            return;
-        }
-
-        if (this.pendingPlanet != null) {
-            this.planetListBox.removeItem(pendingPlanet);
-        }
-        this.pendingPlanet = pendingPlanet;
-        this.planetListBox.addItem(pendingPlanet);
-        this.planetListBox.setSelectedItem(pendingPlanet);
-    }
+    private javax.swing.JComboBox zoomComboBox;
 }
