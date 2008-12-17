@@ -7,33 +7,79 @@ import java.util.Random;
 import dancek.vecmath.SimpleVector;
 
 /**
- * @author Hannu Hartikainen
+ * Luokka, joka sisältää maailmassa olevat asiat (käytännössä planeetat).
  * 
+ * @author Hannu Hartikainen
  */
 public class World {
+    // gravitaatiovakio (kopioitu reaalimaailmasta)
     public final static double GRAVITATIONAL_CONSTANT = 6.6743e-11;
 
     private static final int GENERATE_PLANET_COUNT = 1000;
 
-    private ArrayList<Planet> planets;
+    // kaksi planeettalistaa, jotta osa planeetoista voi olla ilman fysiikkaa
+    // (lisäysvaihe GUI:ssa); käytännössä tähän olisi riittänyt pelkkä
+    // pendingPlanet, mutta tällä tavoin koodi on selkeämpää ja tehokkaampaa
+    private ArrayList<Planet> planetsWithPhysics;
+    private ArrayList<Planet> allPlanets;
 
     private boolean simulationRunning;
 
+    private Planet pendingPlanet;
+
+    /**
+     * Antaa parhaillaan lisättävän planeetan.
+     * 
+     * @return odottava planeetta
+     */
+    public Planet getPendingPlanet() {
+        return this.pendingPlanet;
+    }
+
+    /**
+     * Konstruktori. Ei mitään ihmeellistä.
+     */
     public World() {
-        this.planets = new ArrayList<Planet>();
+        this.planetsWithPhysics = new ArrayList<Planet>();
+        this.allPlanets = new ArrayList<Planet>();
         this.simulationRunning = true;
     }
 
+    /**
+     * Lisää planeetan.
+     * 
+     * @param planet planeetta
+     */
     public void addPlanet(Planet planet) {
-        this.planets.add(planet);
-    }
-    
-    public void removePlanet(Planet planet) {
-        this.planets.remove(planet);
+        if (planet.equals(this.pendingPlanet)) {
+            this.planetsWithPhysics.add(planet);
+            this.pendingPlanet = null;
+        } else {
+            this.planetsWithPhysics.add(planet);
+            this.allPlanets.add(planet);
+        }
     }
 
+    /**
+     * Poistaa planeetan.
+     * 
+     * @param planet planeetta
+     */
+    public void removePlanet(Planet planet) {
+        if (planet.equals(this.pendingPlanet)) {
+            this.pendingPlanet = null;
+            this.allPlanets.remove(planet);
+        } else {
+            this.planetsWithPhysics.remove(planet);
+            this.allPlanets.remove(planet);
+        }
+    }
+
+    /**
+     * Nollaa planeetoihin vaikuttavat voimat.
+     */
     public void resetAllForces() {
-        ListIterator<Planet> itr = this.planets.listIterator();
+        ListIterator<Planet> itr = this.planetsWithPhysics.listIterator();
         Planet planet;
 
         while (itr.hasNext()) {
@@ -42,8 +88,13 @@ public class World {
         }
     }
 
+    /**
+     * Kutsuu kunkin planeetan update-metodia.
+     * 
+     * @param dt aika-askel
+     */
     public synchronized void updateAll(double dt) {
-        ListIterator<Planet> itr = this.planets.listIterator();
+        ListIterator<Planet> itr = this.planetsWithPhysics.listIterator();
         Planet planet;
 
         while (itr.hasNext()) {
@@ -52,8 +103,13 @@ public class World {
         }
     }
 
+    /**
+     * Laskee kaikkien planeettojen väliset gravitaatiovoimat. Hyödyntää voiman
+     * ja vastavoiman lakia, eli joka laskulla saadaan kaksi voimaa eikä lasketa
+     * samoja planeettoja enää toisin päin.
+     */
     public void gravitateAll() {
-        ListIterator<Planet> itr1 = this.planets.listIterator();
+        ListIterator<Planet> itr1 = this.planetsWithPhysics.listIterator();
         ListIterator<Planet> itr2;
         Planet planet1 = null, planet2 = null;
 
@@ -61,7 +117,7 @@ public class World {
             planet1 = itr1.next();
 
         while (itr1.hasNext()) {
-            itr2 = this.planets.listIterator(itr1.nextIndex());
+            itr2 = this.planetsWithPhysics.listIterator(itr1.nextIndex());
 
             while (itr2.hasNext()) {
                 planet2 = itr2.next();
@@ -73,6 +129,13 @@ public class World {
         }
     }
 
+    /**
+     * Laskee kahden planeetan välisen gravitaatiovoiman, ja lisää sen
+     * kummallekin planeetalle (voiman ja vastavoiman laki).
+     * 
+     * @param planet1 planeetta
+     * @param planet2 planeetta
+     */
     public void gravitate(Planet planet1, Planet planet2) {
         SimpleVector a = planet1.getPosition();
         a.sub(planet2.getPosition());
@@ -88,18 +151,40 @@ public class World {
         planet1.addForce(a);
     }
 
+    /**
+     * Antaa kaikki maailmassa olevat planeetat (myös ne, joille ei lasketa
+     * fysiikkaa).
+     * 
+     * @return lista planeetoista
+     */
     public ArrayList<Planet> getPlanets() {
-        return this.planets;
+        return this.allPlanets;
     }
-    
+
+    /**
+     * Kertoo, pitäisikö simulaation pyöriä.
+     * 
+     * @return true jos fysiikkaa lasketaan
+     */
     public boolean isSimulationRunning() {
         return this.simulationRunning;
     }
-    
+
+    /**
+     * Asettaa fysiikan simuloinnin päälle tai pois.
+     * 
+     * @param run true jos fysiikkaa lasketaan
+     */
     public void setSimulationRunning(boolean run) {
         this.simulationRunning = run;
     }
 
+    /**
+     * Antaa maailman, jossa on maa ja kuu oikeilla arvoilla. Käytin tätä
+     * jossain vaiheessa fysiikan testaamiseen.
+     * 
+     * @return maailma, jossa maa ja kuu
+     */
     public static World earthAndMoon() {
         World world = new World();
 
@@ -112,34 +197,12 @@ public class World {
         return world;
     }
 
-    public static World generateWorld() {
-        return generateWorld(GENERATE_PLANET_COUNT);
-    }
-
-    public static World generateWorld(int planetNumber) {
-        World world = new World();
-        Random rand = new Random();
-
-        // world.addPlanet(new Planet(400,300,0,-10,1e17));
-        // world.addPlanet(new Planet(200,300,0,150,4e16));
-        // world.addPlanet(new Planet(300,100,30,0,2e15));
-
-        world.addPlanet(new Planet(400, 300, 0, 0, 1e18));
-
-        for (int i = 0; i < planetNumber; i++) {
-            double x = rand.nextInt(800);
-            double y = rand.nextInt(600);
-            // double xvel = rand.nextDouble() * 100;
-            // double yvel = rand.nextDouble() * 100;
-            double xvel = Math.pow(5000 / (y - 300), 2);
-            double yvel = Math.pow(5000 / (x - 400), 2);
-            double mass = rand.nextDouble() * Math.pow(10, rand.nextInt(17));
-            world.addPlanet(new Planet(x, y, xvel, yvel, mass));
-        }
-        return world;
-    }
-
-    public static World quickEarthAndMoon() {
+    /**
+     * Luo testimaailman, jota olen käyttänyt ohjelmaa kehittäessä.
+     * 
+     * @return maailma, jossa muutama planeetta
+     */
+    public static World quickTestWorld() {
         World world = new World();
 
         Planet sun = new Planet(0, 0, 0, 0, 1e40);
@@ -179,5 +242,24 @@ public class World {
         double vel = smaller.getLinearVelocity();
 
         bigger.setMass(r * vel * vel / GRAVITATIONAL_CONSTANT);
+    }
+
+    /**
+     * Lisää planeetan, jolle ei vielä lasketa fysiikkaa.
+     * 
+     * @param pendingPlanet planeetta
+     */
+    protected void addPendingPlanet(Planet pendingPlanet) {
+        this.allPlanets.add(pendingPlanet);
+        this.pendingPlanet = pendingPlanet;
+    }
+
+    /**
+     * Onko odottavaa planeettaa.
+     * 
+     * @return true, jos maailmassa on lisäystä odottava planeetta
+     */
+    public boolean hasPendingPlanet() {
+        return (this.pendingPlanet != null);
     }
 }

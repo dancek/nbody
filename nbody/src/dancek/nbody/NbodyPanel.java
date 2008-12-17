@@ -27,7 +27,6 @@ public class NbodyPanel extends JPanel {
     private int xOffset;
     private int yOffset;
     private double scalingFactor;
-    private Planet pendingPlanet;
     private int panelCenterXOffset;
     private int panelCenterYOffset;
     private int mouseX;
@@ -61,15 +60,15 @@ public class NbodyPanel extends JPanel {
             this.drawPlanet(g2d, planet);
         }
 
-        if (this.pendingPlanet != null) {
-            this.drawPlanet(g2d, this.pendingPlanet);
-            this.drawVelocityVector(g2d);
+        if (this.world.hasPendingPlanet()) {
+            //this.drawPlanet(g2d, this.pendingPlanet);
+            this.drawVelocityVector(g2d, this.world.getPendingPlanet());
         }
     }
 
-    private void drawVelocityVector(Graphics2D g2d) {
-        int planetX = this.screenX(this.pendingPlanet.getPosition().x);
-        int planetY = this.screenY(this.pendingPlanet.getPosition().y);
+    private void drawVelocityVector(Graphics2D g2d, Planet pendingPlanet) {
+        int planetX = this.screenX(pendingPlanet.getPosition().x);
+        int planetY = this.screenY(pendingPlanet.getPosition().y);
 
         g2d.setColor(VECTOR_COLOR);
         g2d.drawLine(planetX, planetY, this.mouseX, this.mouseY);
@@ -110,18 +109,18 @@ public class NbodyPanel extends JPanel {
     public Planet addPendingPlanet(int x, int y) {
         double planetX = this.worldX(x);
         double planetY = this.worldY(y);
-        this.pendingPlanet = new Planet(planetX, planetY);
+        this.world.addPendingPlanet(new Planet(planetX, planetY));
         this.mouseX = x;
         this.mouseY = y;
-        return this.pendingPlanet;
+        return this.world.getPendingPlanet();
     }
 
     public void setPendingPlanetVelocity(int x, int y) {
-        double xVelocity = this.worldX(x) - this.pendingPlanet.getPosition().x;
-        double yVelocity = this.worldY(y) - this.pendingPlanet.getPosition().y;
-        this.pendingPlanet.setVelocity(xVelocity, yVelocity);
+        Planet pendingPlanet = this.world.getPendingPlanet();
+        double xVelocity = this.worldX(x) - pendingPlanet.getPosition().x;
+        double yVelocity = this.worldY(y) - pendingPlanet.getPosition().y;
+        pendingPlanet.setVelocity(xVelocity, yVelocity);
         this.world.addPlanet(pendingPlanet);
-        this.pendingPlanet = null;
     }
 
     protected void moveView(int x, int y) {

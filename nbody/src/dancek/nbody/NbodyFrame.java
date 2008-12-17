@@ -129,17 +129,15 @@ public class NbodyFrame extends JFrame {
 
     private class NbodyPanelMouseListener implements MouseListener, MouseMotionListener, MouseWheelListener {
         public void mouseClicked(MouseEvent e) {
-            if (waitingForVelocity) {
+            if (world.hasPendingPlanet()) {
                 nbodyPanel.setPendingPlanetVelocity(e.getX(), e.getY());
                 planetPanel.setPendingPlanet(null);
-                waitingForVelocity = false;
                 return;
             }
 
             if (e.getClickCount() == 2) {
                 Planet pendingPlanet = nbodyPanel.addPendingPlanet(e.getX(), e.getY());
                 planetPanel.setPendingPlanet(pendingPlanet);
-                waitingForVelocity = true;
             }
         }
 
@@ -164,7 +162,7 @@ public class NbodyFrame extends JFrame {
         }
 
         public void mouseMoved(MouseEvent e) {
-            if (waitingForVelocity)
+            if (world.hasPendingPlanet())
                 nbodyPanel.setMouse(e.getX(), e.getY());
         }
 
