@@ -23,12 +23,11 @@ public class NbodyFrame extends JFrame {
     private World world;
     private NbodyPanel nbodyPanel;
     private ScheduledFuture<?> simulationHandle;
-    private boolean simulationRunning;
     private PlanetPanel planetPanel;
     public boolean waitingForVelocity;
     private JLabel statusLabel;
     private NbodyPanelMouseListener nbodyPanelMouseListener;
-    
+
     private int mouseDragLastX;
     private int mouseDragLastY;
 
@@ -39,7 +38,7 @@ public class NbodyFrame extends JFrame {
         this.nbodyPanel = new NbodyPanel(this.world);
         this.planetPanel = new PlanetPanel(this, this.world);
         this.statusLabel = new JLabel();
-        
+
         this.statusLabel.setText("Double click to add a planet");
 
         this.setLayout(new BorderLayout());
@@ -65,8 +64,7 @@ public class NbodyFrame extends JFrame {
         this.nbodyPanel.addMouseMotionListener(this.nbodyPanelMouseListener);
         this.nbodyPanel.addMouseWheelListener(this.nbodyPanelMouseListener);
 
-        this.simulationHandle = Physics.startPhysics(this.world, this.nbodyPanel, this.planetPanel);
-        this.simulationRunning = true;
+        this.simulationHandle = RenderingThread.startRendering(this.world, this.nbodyPanel, this.planetPanel);
     }
 
     /**
@@ -87,12 +85,12 @@ public class NbodyFrame extends JFrame {
 
         JMenuItem changeLanguage = new JMenuItem(("changeLanguage"));
 
-//        newGame.addActionListener(new NewGameListener());
-//        selectMap.addActionListener(new SelectMapListener());
-//        highScores.addActionListener(new HighScoreListener());
-//        quit.addActionListener(new QuitListener());
-//
-//        changeLanguage.addActionListener(new ChangeLanguageListener());
+        // newGame.addActionListener(new NewGameListener());
+        // selectMap.addActionListener(new SelectMapListener());
+        // highScores.addActionListener(new HighScoreListener());
+        // quit.addActionListener(new QuitListener());
+        //
+        // changeLanguage.addActionListener(new ChangeLanguageListener());
 
         newGame.setAccelerator(KeyStroke.getKeyStroke("F2"));
 
@@ -114,23 +112,21 @@ public class NbodyFrame extends JFrame {
     protected NbodyPanel getNbodyPanel() {
         return this.nbodyPanel;
     }
-    
+
     protected void updateSimulationView() {
         this.nbodyPanel.repaint();
     }
 
     protected boolean toggleSimulation() {
-      if (this.simulationRunning) {
-            this.simulationHandle.cancel(false);
-            this.simulationRunning = false;
+        if (this.world.isSimulationRunning()) {
+            this.world.setSimulationRunning(false);
             return false;
         } else {
-            this.simulationHandle = Physics.startPhysics(this.world, this.nbodyPanel, this.planetPanel);
-            this.simulationRunning = true;
+            this.world.setSimulationRunning(true);
             return true;
         }
     }
-    
+
     private class NbodyPanelMouseListener implements MouseListener, MouseMotionListener, MouseWheelListener {
         public void mouseClicked(MouseEvent e) {
             if (waitingForVelocity) {
@@ -168,6 +164,8 @@ public class NbodyFrame extends JFrame {
         }
 
         public void mouseMoved(MouseEvent e) {
+            if (waitingForVelocity)
+                nbodyPanel.setMouse(e.getX(), e.getY());
         }
 
         public void mouseWheelMoved(MouseWheelEvent e) {

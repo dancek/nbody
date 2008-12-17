@@ -46,3 +46,6 @@ YHTEENSÄ 49h
 15.12. 5h: planeettojen lisäys ja poisto, gui-kehitys (sivupaneeli uusiksi)
 
 16.12. 1h: zoom ja drag
+
+17.12. 2h: zoomaus kursoriin, vektorin piirto
+	

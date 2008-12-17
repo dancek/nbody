@@ -64,7 +64,7 @@ public abstract class PhysicalObject {
          * tapa ratkaista ongelmaa, mutta virheet jää kuitenkin aika pieneksi.
          */
         this.lastPosition = this.velocity.clone();
-        this.lastPosition.scale(-Physics.PHYSICS_TIMESTEP);
+        this.lastPosition.scale(-RenderingThread.PHYSICS_TIMESTEP);
         this.lastPosition.add(this.position);
     }
 

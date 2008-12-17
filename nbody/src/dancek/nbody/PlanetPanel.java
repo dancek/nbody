@@ -79,9 +79,9 @@ public class PlanetPanel extends javax.swing.JPanel {
         nextPlanetButton = new javax.swing.JButton();
         jSeparator3 = new javax.swing.JSeparator();
         removePlanetButton = new javax.swing.JButton();
+        removeOtherPlanetsButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         startStopButton = new javax.swing.JToggleButton();
-        jScrollBar1 = new javax.swing.JScrollBar();
 
         setMinimumSize(new java.awt.Dimension(300, 400));
 
@@ -109,7 +109,7 @@ public class PlanetPanel extends javax.swing.JPanel {
             }
         });
 
-        massExponentSlider.setMaximum(50);
+        massExponentSlider.setMaximum(25);
         massExponentSlider.setValue(10);
         massExponentSlider.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -197,60 +197,58 @@ public class PlanetPanel extends javax.swing.JPanel {
             }
         });
 
+        removeOtherPlanetsButton.setText("Remove all other planets");
+        removeOtherPlanetsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeOtherPlanetsButtonClicked(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel1Layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jSeparator2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE)
-                    .add(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(jSeparator2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1Layout.createSequentialGroup()
                         .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jPanel1Layout.createSequentialGroup()
-                                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 70, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(massTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                                    .add(massSlider, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
-                                    .add(massExponentSlider, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)))
-                            .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                                .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1Layout.createSequentialGroup()
-                                    .add(jLabel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 70, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                    .add(nameTextField)
-                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                    .add(planetColorButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1Layout.createSequentialGroup()
-                                    .add(jLabel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 70, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                    .add(xPositionTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 79, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                    .add(yPositionTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 79, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))))
-                    .add(jPanel1Layout.createSequentialGroup()
+                            .add(jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 70, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(massTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED))
-                    .add(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                            .add(massSlider, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
+                            .add(massExponentSlider, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1Layout.createSequentialGroup()
+                            .add(jLabel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 70, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                            .add(nameTextField)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                            .add(planetColorButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1Layout.createSequentialGroup()
+                            .add(jLabel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 70, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                            .add(xPositionTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 79, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                            .add(yPositionTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 79, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1Layout.createSequentialGroup()
                         .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(jLabel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 70, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(jLabel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 70, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(directionSlider, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
-                            .add(velocitySlider, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1Layout.createSequentialGroup()
+                            .add(directionSlider, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
+                            .add(velocitySlider, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)))
+                    .add(jSeparator3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
+                    .add(removePlanetButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
+                    .add(jPanel1Layout.createSequentialGroup()
+                        .add(planetListBox, 0, 125, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jSeparator3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, removePlanetButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .add(planetListBox, 0, 145, Short.MAX_VALUE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(nextPlanetButton)))
+                        .add(nextPlanetButton))
+                    .add(removeOtherPlanetsButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -294,6 +292,8 @@ public class PlanetPanel extends javax.swing.JPanel {
                 .add(jSeparator3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(removePlanetButton)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(removeOtherPlanetsButton)
                 .addContainerGap())
         );
 
@@ -306,14 +306,6 @@ public class PlanetPanel extends javax.swing.JPanel {
             }
         });
 
-        jScrollBar1.setMinimum(1);
-        jScrollBar1.setOrientation(javax.swing.JScrollBar.HORIZONTAL);
-        jScrollBar1.addAdjustmentListener(new java.awt.event.AdjustmentListener() {
-            public void adjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {
-                zoomLevelChanged(evt);
-            }
-        });
-
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -321,18 +313,14 @@ public class PlanetPanel extends javax.swing.JPanel {
             .add(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(startStopButton)
-                .add(18, 18, 18)
-                .add(jScrollBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(49, Short.MAX_VALUE))
+                .addContainerGap(163, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jScrollBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 15, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(startStopButton))
-                .addContainerGap(123, Short.MAX_VALUE))
+                .add(startStopButton)
+                .addContainerGap(66, Short.MAX_VALUE))
         );
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
@@ -361,20 +349,25 @@ private void startStopButtonClicked(java.awt.event.ActionEvent evt) {//GEN-FIRST
     this.nbodyFrame.toggleSimulation();
 }//GEN-LAST:event_startStopButtonClicked
 
-private void zoomLevelChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:event_zoomLevelChanged
-    this.nbodyFrame.getNbodyPanel().setScalingFactor(this.jScrollBar1.getValue() / 100.0);
-}//GEN-LAST:event_zoomLevelChanged
+private void removeOtherPlanetsButtonClicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeOtherPlanetsButtonClicked
+    for (Planet p : this.world.getPlanets()) {
+        if (!p.equals(this.planet)) {
+            this.world.removePlanet(p);
+        }
+    }
+}//GEN-LAST:event_removeOtherPlanetsButtonClicked
 
     private void massSliderChanged(javax.swing.event.ChangeEvent evt) {// GEN-
         // FIRST:
         // event_massSliderChanged
+
         double mass = 0.1 * this.massSlider.getValue() * Math.pow(10, this.massExponentSlider.getValue());
         this.massTextField.setText(String.format("%.1e", mass));
         this.planet.setMass(mass);
         this.updateVisuals();
     }// GEN-LAST:event_massSliderChanged
 
-    private void massTextFieldChanged(java.awt.event.KeyEvent evt) {            
+    private void massTextFieldChanged(java.awt.event.KeyEvent evt) {
         // event_massTextFieldChanged
         // toimitaan vain, jos painettiin enteriä
         if (evt.getKeyChar() != '\n') {
@@ -391,7 +384,7 @@ private void zoomLevelChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:e
         }
     }// GEN-LAST:event_massTextFieldChanged
 
-    private void nameTextFieldChanged(java.awt.event.KeyEvent evt) {            
+    private void nameTextFieldChanged(java.awt.event.KeyEvent evt) {
         // event_nameTextFieldChanged
         // toimitaan vain, jos painettiin enteriä
         if (evt.getKeyChar() != '\n') {
@@ -405,6 +398,7 @@ private void zoomLevelChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:e
     private void velocitySliderChanged(java.awt.event.MouseEvent evt) {// GEN-
         // FIRST:
         // event_velocitySliderChanged
+
         this.planet.setVelocityPolar(this.velocitySlider.getValue(), this.directionSlider.getValue() / 1000.0);
     }// GEN-LAST:event_velocitySliderChanged
 
@@ -412,6 +406,7 @@ private void zoomLevelChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:e
         // FIRST
         // :
         // event_planetColorButtonClicked
+
         Color newColor = JColorChooser.showDialog(this, "Choose planet color", this.planet.getColor());
 
         if (newColor != null) {
@@ -425,22 +420,25 @@ private void zoomLevelChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:e
         // FIRST
         // :
         // event_planetChangedFromList
+
         this.setPlanet((Planet) this.planetListBox.getSelectedItem());
     }// GEN-LAST:event_planetChangedFromList
 
     private void nextPlanet(java.awt.event.ActionEvent evt) {// GEN-FIRST:
         // event_nextPlanet
+
         int index = this.planetListBox.getSelectedIndex() + 1; // halutaan
         // seuraava
+
         int count = this.planetListBox.getItemCount();
 
         // valitaan ensimmäinen jos ollaan viimeisessä
         // ja poistutaan jos lista on tyhjä
-        if (count == 0)
+        if (count == 0) {
             return;
-        else if (count < index + 1)
+        } else if (count < index + 1) {
             index = 0;
-
+        }
         this.planetListBox.setSelectedIndex(index);
         this.setPlanet((Planet) this.planetListBox.getSelectedItem());
     }// GEN-LAST:event_nextPlanet
@@ -490,7 +488,6 @@ private void zoomLevelChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:e
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollBar jScrollBar1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
@@ -501,6 +498,7 @@ private void zoomLevelChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:e
     private javax.swing.JButton nextPlanetButton;
     private javax.swing.JButton planetColorButton;
     private javax.swing.JComboBox planetListBox;
+    private javax.swing.JButton removeOtherPlanetsButton;
     private javax.swing.JButton removePlanetButton;
     private javax.swing.JToggleButton startStopButton;
     private javax.swing.JSlider velocitySlider;
@@ -518,9 +516,9 @@ private void zoomLevelChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:e
             return;
         }
 
-        if (this.pendingPlanet != null)
+        if (this.pendingPlanet != null) {
             this.planetListBox.removeItem(pendingPlanet);
-
+        }
         this.pendingPlanet = pendingPlanet;
         this.planetListBox.addItem(pendingPlanet);
         this.planetListBox.setSelectedItem(pendingPlanet);

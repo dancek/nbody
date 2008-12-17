@@ -17,8 +17,11 @@ public class World {
 
     private ArrayList<Planet> planets;
 
+    private boolean simulationRunning;
+
     public World() {
         this.planets = new ArrayList<Planet>();
+        this.simulationRunning = true;
     }
 
     public void addPlanet(Planet planet) {
@@ -87,6 +90,14 @@ public class World {
 
     public ArrayList<Planet> getPlanets() {
         return this.planets;
+    }
+    
+    public boolean isSimulationRunning() {
+        return this.simulationRunning;
+    }
+    
+    public void setSimulationRunning(boolean run) {
+        this.simulationRunning = run;
     }
 
     public static World earthAndMoon() {

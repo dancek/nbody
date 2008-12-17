@@ -11,18 +11,26 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JPanel;
 
 /**
- * @author Hannu Hartikainen
+ * Luokka sisältää metodit fysiikan ja renderöinnin pyörittämiseen halutuin
+ * väliajoin.
  * 
+ * @author Hannu Hartikainen
  */
-public class Physics implements Runnable {
+public class RenderingThread {
 
+    // montako kertaa sekunnissa ajetaan (50-60 on osoittautunut sopivaksi,
+    // enemmänkin toki voisi laittaa mutta alkaa syödä konetehoa)
     private static final int PHYSICS_FPS = 60;
     protected static final double PHYSICS_TIMESTEP = 1.0 / PHYSICS_FPS;
 
-    public void run() {
-
-    }
-
+    /**
+     * Laittaa fysiikan pyörimään muttei tee repaint()-kutsuja. Käytin tätä
+     * metodia paljon kehitysvaiheessa, mutta lopullisessa ohjelmassa tätä ei
+     * käytetä.
+     * 
+     * @param world World-olio
+     * @return kahva säikeeseen
+     */
     public static ScheduledFuture<?> startPhysics(final World world) {
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
@@ -37,14 +45,27 @@ public class Physics implements Runnable {
         return scheduler.scheduleAtFixedRate(gamePhysics, 0, (long) (1000 * PHYSICS_TIMESTEP), TimeUnit.MILLISECONDS);
     }
 
-    public static ScheduledFuture<?> startPhysics(final World world, final NbodyPanel nbodyPanel, final PlanetPanel planetPanel) {
+    /**
+     * Pyörittää fysiikkaa ja piirtoa (oikeastaan kutsuu repaint()-metodia ja
+     * PlanetPanelin päivitysmetodia).
+     * 
+     * @param world maailma
+     * @param nbodyPanel piirtopaneeli
+     * @param planetPanel hallintapaneeli
+     * @return kahva säikeeseen
+     */
+    public static ScheduledFuture<?> startRendering(final World world, final NbodyPanel nbodyPanel,
+            final PlanetPanel planetPanel) {
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
         Runnable gamePhysics = new Runnable() {
             public void run() {
-                world.resetAllForces();
-                world.gravitateAll();
-                world.updateAll(PHYSICS_TIMESTEP);
+                // ei päivitetä fysiikkaa aina, mutta piirretään aina
+                if (world.isSimulationRunning()) {
+                    world.resetAllForces();
+                    world.gravitateAll();
+                    world.updateAll(PHYSICS_TIMESTEP);
+                }
                 nbodyPanel.repaint();
                 planetPanel.updateComponentValues();
             }
