@@ -19,6 +19,10 @@ public class NbodyPanel extends JPanel {
     /**
      * 
      */
+    private static final double DEFAULT_SCALING_FACTOR = 0.5;
+    /**
+     * 
+     */
     private static final double MOUSE_WHEEL_FACTOR = 10.0;
     private static final Dimension PANEL_SIZE = new Dimension(700, 700);
     private static final Color VECTOR_COLOR = Color.gray;
@@ -33,10 +37,10 @@ public class NbodyPanel extends JPanel {
     private int mouseY;
 
     public NbodyPanel(World world) {
-        this.world = world;
+        this.setWorld(world);
 
         this.setPreferredSize(PANEL_SIZE);
-        this.scalingFactor = 1.0;
+        this.scalingFactor = DEFAULT_SCALING_FACTOR;
     }
 
     public double getScalingFactor() {
@@ -150,5 +154,12 @@ public class NbodyPanel extends JPanel {
     protected void setMouse(int x, int y) {
         this.mouseX = x;
         this.mouseY = y;
+    }
+
+    /**
+     * Asettaa maailman.
+     */
+    protected void setWorld(World world) {
+        this.world = world;
     }
 }

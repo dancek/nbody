@@ -1,8 +1,16 @@
 package dancek.nbody;
 
+import java.awt.Color;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.Random;
+import java.util.Scanner;
 
 import dancek.vecmath.SimpleVector;
 
@@ -137,7 +145,7 @@ public class World {
      * @param planet2 planeetta
      */
     public void gravitate(Planet planet1, Planet planet2) {
-        SimpleVector a = planet1.getPosition();
+        SimpleVector a = planet1.getPosition().clone();
         a.sub(planet2.getPosition());
 
         double rSquared = a.lengthSquared();
@@ -207,7 +215,7 @@ public class World {
 
         Planet sun = new Planet(0, 0, 0, 0, 1e40);
         Planet earth = new Planet(0, 200, 160, 0, 1e15);
-        Planet moon = new Planet(200, 30, 40, -40, 1e9);
+        Planet moon = new Planet(200, 30, 40, -60, 1e9);
 
         // World.stabilize(earth, moon);
         World.stabilize(sun, earth);
@@ -235,7 +243,7 @@ public class World {
         // bigger = temp;
         // }
 
-        SimpleVector distanceVector = bigger.getPosition();
+        SimpleVector distanceVector = bigger.getPosition().clone();
         distanceVector.sub(smaller.getPosition());
 
         double r = distanceVector.length();
@@ -261,5 +269,54 @@ public class World {
      */
     public boolean hasPendingPlanet() {
         return (this.pendingPlanet != null);
+    }
+
+    /**
+     * Tallentaa maailman tiedostoon. Heittää mahdolliset poikkeukset kutsuvalle metodille.
+     * 
+     * @param file tiedosto
+     * @throws IOException
+     */
+    public void save(File file) throws IOException {
+        FileWriter writer = new FileWriter(file);
+        
+        for (Planet planet : this.getPlanets()) {
+            String planetString = "";
+            planetString += planet.getPosition().x + ";";
+            planetString += planet.getPosition().y + ";";
+            planetString += planet.getVelocity().x + ";";
+            planetString += planet.getVelocity().y + ";";
+            planetString += planet.getMass() + ";";
+            planetString += planet.getName() + ";";
+            planetString += planet.getColor().getRGB() + "\n";
+
+            writer.write(planetString);
+        }
+        
+        writer.close();
+    }
+    
+    public static World load(File file) throws FileNotFoundException, NumberFormatException {
+        Scanner scanner = new Scanner(file);
+        World world = new World();
+        
+        while (scanner.hasNextLine()) {
+            // pilkotaan rivi paloiksi ja tulkitaan joka pala
+            String[] parameters = scanner.nextLine().split(";");
+            
+            double positionX = Double.parseDouble(parameters[0]);
+            double positionY = Double.parseDouble(parameters[1]);
+            double velocityX = Double.parseDouble(parameters[2]);
+            double velocityY = Double.parseDouble(parameters[3]);
+            double mass = Double.parseDouble(parameters[4]);
+            String name = parameters[5];
+            Color color = new Color(Integer.parseInt(parameters[6]));
+            
+            Planet planet = new Planet(positionX, positionY, velocityX, velocityY, mass, name, color);
+            
+            world.addPlanet(planet);
+        }
+        
+        return world;
     }
 }

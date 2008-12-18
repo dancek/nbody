@@ -41,7 +41,11 @@ public abstract class PhysicalObject {
     }
 
     public SimpleVector getPosition() {
-        return this.position.clone();
+        return this.position;
+    }
+    
+    public SimpleVector getVelocity() {
+        return this.velocity;
     }
 
     public double getMass() {

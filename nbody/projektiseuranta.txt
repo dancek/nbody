@@ -48,5 +48,6 @@ YHTEENSÄ 49h
 16.12. 1h: zoom ja drag
 
 17.12. 2h: zoomaus kursoriin, vektorin piirto
-      6h: ui-päivitykset
+      7h: ui-päivitykset
+      1h: aurinkokunta
 	

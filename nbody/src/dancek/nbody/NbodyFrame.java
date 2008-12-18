@@ -11,9 +11,14 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.ScheduledFuture;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+
+import dancek.io.RegexFileFilter;
 
 /**
  * Ohjelman ikkuna (JFrame-kehys). Sisältää piirtopaneelin ja sivupaneelin ja
@@ -22,6 +27,11 @@ import javax.swing.*;
  * @author Hannu Hartikainen
  */
 public class NbodyFrame extends JFrame {
+
+    private static final String WORLD_FILE_EXTENSION = "world";
+    private static final String WORLD_FILE_REGEX = ".*\\." + WORLD_FILE_EXTENSION;
+    private static final FileFilter WORLD_FILE_FILTER = new RegexFileFilter(WORLD_FILE_REGEX, "nbody (*."
+            + WORLD_FILE_EXTENSION + ")");
 
     private World world;
     private NbodyPanel nbodyPanel;
@@ -33,13 +43,15 @@ public class NbodyFrame extends JFrame {
 
     private int mouseDragLastX;
     private int mouseDragLastY;
+    private JScrollPane scrollPane;
 
     public NbodyFrame(World world) {
         this.setJMenuBar(this.createMenuBar());
 
-        this.world = world;
-        this.nbodyPanel = new NbodyPanel(this.world);
-        this.planetPanel = new PlanetPanel(this, this.world);
+        this.nbodyPanel = new NbodyPanel(world);
+        this.planetPanel = new PlanetPanel(this, world);
+        this.scrollPane = new JScrollPane(this.planetPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         this.statusLabel = new JLabel();
 
         this.statusLabel.setText("Double click to add a planet");
@@ -47,7 +59,7 @@ public class NbodyFrame extends JFrame {
         this.setLayout(new BorderLayout());
 
         this.add(this.nbodyPanel, BorderLayout.CENTER);
-        this.add(this.planetPanel, BorderLayout.EAST);
+        this.add(this.scrollPane, BorderLayout.EAST);
         this.add(this.statusLabel, BorderLayout.SOUTH);
         this.pack();
 
@@ -67,6 +79,16 @@ public class NbodyFrame extends JFrame {
         this.nbodyPanel.addMouseMotionListener(this.nbodyPanelMouseListener);
         this.nbodyPanel.addMouseWheelListener(this.nbodyPanelMouseListener);
 
+        this.setWorld(world);
+    }
+
+    private void setWorld(World world) {
+        this.world = world;
+        this.nbodyPanel.setWorld(this.world);
+        this.planetPanel.setWorld(this.world);
+
+        if (this.simulationHandle != null)
+            this.simulationHandle.cancel(false);
         this.simulationHandle = RenderingThread.startRendering(this.world, this.nbodyPanel, this.planetPanel);
     }
 
@@ -90,9 +112,33 @@ public class NbodyFrame extends JFrame {
 
         newWorld.setAccelerator(KeyStroke.getKeyStroke("F2"));
 
+        newWorld.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                setWorld(new World());
+            }
+        });
+
+        loadWorld.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                loadWorld();
+            }
+        });
+
         saveWorld.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 saveWorld();
+            }
+        });
+
+        quit.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+
+        about.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                about();
             }
         });
 
@@ -112,10 +158,55 @@ public class NbodyFrame extends JFrame {
     }
 
     /**
-     * Metodi, jota kutsutaan tallennus-valikkoitemistä.
+     * Näyttää viestin jossa on tärkeimpiä tietoja ohjelmasta.
+     */
+    protected void about() {
+    }
+
+    /**
+     * Hoitaa maailman lataamisen.
+     */
+    protected void loadWorld() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(WORLD_FILE_FILTER);
+        fileChooser.showOpenDialog(this);
+        try {
+            File file = fileChooser.getSelectedFile();
+            if (file == null)
+                return;
+
+            this.setWorld(World.load(file));
+        } catch (Exception e) {
+            // ongelmatilanteissa informoidaan käyttäjää
+            JOptionPane.showMessageDialog(this, "The file is not a proper world file.", "Unsuitable file",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Tallentaa maailman tiedostoon.
      */
     protected void saveWorld() {
-        new JFileChooser();
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(WORLD_FILE_FILTER);
+        fileChooser.showSaveDialog(this);
+
+        try {
+            File file = fileChooser.getSelectedFile();
+            if (file == null)
+                return;
+            
+            // yritetään huolehtia, että tiedosto saa .world-päätteen
+            if (!file.getName().matches(WORLD_FILE_REGEX))
+                file = new File(file.getCanonicalPath() + "." + WORLD_FILE_EXTENSION);
+            
+            this.world.save(file);
+            
+        } catch (IOException e) {
+            // ongelmatilanteissa informoidaan käyttäjää
+            JOptionPane.showMessageDialog(this, "The file could not be written.", "Problem saving world",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     protected NbodyPanel getNbodyPanel() {
@@ -143,6 +234,7 @@ public class NbodyFrame extends JFrame {
             // jos planeetan lisäys kesken, klikkaamalla tehdään nopeusvektori
             if (world.hasPendingPlanet()) {
                 nbodyPanel.setPendingPlanetVelocity(e.getX(), e.getY());
+                statusLabel.setText("Double click to add a planet");
                 return;
             }
 
@@ -151,6 +243,7 @@ public class NbodyFrame extends JFrame {
                 Planet pendingPlanet = nbodyPanel.addPendingPlanet(e.getX(), e.getY());
                 planetPanel.updatePlanetList();
                 planetPanel.setPlanet(pendingPlanet);
+                statusLabel.setText("Click to set velocity");
             }
         }
 
