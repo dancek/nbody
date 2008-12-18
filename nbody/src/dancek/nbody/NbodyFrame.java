@@ -44,11 +44,12 @@ public class NbodyFrame extends JFrame {
     private int mouseDragLastX;
     private int mouseDragLastY;
     private JScrollPane scrollPane;
+    private AboutDialog aboutDialog;
 
     public NbodyFrame(World world) {
         this.setJMenuBar(this.createMenuBar());
 
-        this.nbodyPanel = new NbodyPanel(world);
+        this.nbodyPanel = new NbodyPanel(this, world);
         this.planetPanel = new PlanetPanel(this, world);
         this.scrollPane = new JScrollPane(this.planetPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -161,6 +162,10 @@ public class NbodyFrame extends JFrame {
      * Näyttää viestin jossa on tärkeimpiä tietoja ohjelmasta.
      */
     protected void about() {
+        if (this.aboutDialog == null)
+            this.aboutDialog = new AboutDialog(this, false);
+        
+        this.aboutDialog.setVisible(true);
     }
 
     /**
@@ -195,13 +200,13 @@ public class NbodyFrame extends JFrame {
             File file = fileChooser.getSelectedFile();
             if (file == null)
                 return;
-            
+
             // yritetään huolehtia, että tiedosto saa .world-päätteen
             if (!file.getName().matches(WORLD_FILE_REGEX))
                 file = new File(file.getCanonicalPath() + "." + WORLD_FILE_EXTENSION);
-            
+
             this.world.save(file);
-            
+
         } catch (IOException e) {
             // ongelmatilanteissa informoidaan käyttäjää
             JOptionPane.showMessageDialog(this, "The file could not be written.", "Problem saving world",
@@ -281,5 +286,15 @@ public class NbodyFrame extends JFrame {
             nbodyPanel.zoom(e.getX(), e.getY(), e.getWheelRotation());
             planetPanel.updateZoom();
         }
+    }
+
+    /**
+     * Kertoo piirretäänkö ruudukko. Kysytään NbodyFramen kautta, koska en ollut
+     * varma haluanko valinnan valikkoon vai sivupaneeliin.
+     * 
+     * @return
+     */
+    protected boolean isGridEnabled() {
+        return this.planetPanel.isGridEnabled();
     }
 }

@@ -50,4 +50,6 @@ YHTEENSÄ 49h
 17.12. 2h: zoomaus kursoriin, vektorin piirto
       7h: ui-päivitykset
       1h: aurinkokunta
+      
+18.12. 1h: grid, about-laatikko
 	

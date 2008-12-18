@@ -19,6 +19,16 @@ public class NbodyPanel extends JPanel {
     /**
      * 
      */
+    private static final Color MINOR_GRIDLINE_COLOR = new Color(0, 15, 0);
+    private static final Color MAJOR_GRIDLINE_COLOR = new Color(0, 30, 0);
+    private static final Color MAJOR2_GRIDLINE_COLOR = new Color(0, 45, 0);
+    private static final int MINOR_GRIDLINE_SPACING = 100;
+    private static final int MAJOR_GRIDLINE_SPACING = 5 * MINOR_GRIDLINE_SPACING;
+    private static final int MAJOR2_GRIDLINE_SPACING = 5 * MAJOR_GRIDLINE_SPACING;
+    private static final int MINIMUM_GRIDLINE_DISTANCE = 10;
+    /**
+     * 
+     */
     private static final double DEFAULT_SCALING_FACTOR = 0.5;
     /**
      * 
@@ -35,8 +45,10 @@ public class NbodyPanel extends JPanel {
     private int panelCenterYOffset;
     private int mouseX;
     private int mouseY;
+    private NbodyFrame nbodyFrame;
 
-    public NbodyPanel(World world) {
+    public NbodyPanel(NbodyFrame nbodyFrame, World world) {
+        this.nbodyFrame = nbodyFrame;
         this.setWorld(world);
 
         this.setPreferredSize(PANEL_SIZE);
@@ -54,19 +66,64 @@ public class NbodyPanel extends JPanel {
     public void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
 
-        this.panelCenterXOffset = this.getWidth() / 2;
-        this.panelCenterYOffset = this.getHeight() / 2;
+        // otetaan paneelin mitat talteen; niitä tarvitaan
+        int width = this.getWidth();
+        int height = this.getHeight();
 
+        // tallennetaan puolivälikoordinaatit (näitä käytetään, jotta saadaan
+        // pidettyä ikkunan keskusta kohdallaan)
+        this.panelCenterXOffset = width / 2;
+        this.panelCenterYOffset = height / 2;
+
+        // tyhjennetään tausta
         g2d.setBackground(Color.black);
-        g2d.clearRect(0, 0, this.getWidth(), this.getHeight());
+        g2d.clearRect(0, 0, width, height);
 
+        // piirretään ruudukko
+        if (this.nbodyFrame.isGridEnabled()) {
+            if (this.getPixelDistance() * MINOR_GRIDLINE_SPACING >= MINIMUM_GRIDLINE_DISTANCE) {
+                g2d.setColor(MINOR_GRIDLINE_COLOR);
+                drawGrid(g2d, MINOR_GRIDLINE_SPACING, width, height);
+            }
+            if (this.getPixelDistance() * MAJOR_GRIDLINE_SPACING >= MINIMUM_GRIDLINE_DISTANCE) {
+                g2d.setColor(MAJOR_GRIDLINE_COLOR);
+                drawGrid(g2d, MAJOR_GRIDLINE_SPACING, width, height);
+            }
+            if (this.getPixelDistance() * MAJOR2_GRIDLINE_SPACING >= MINIMUM_GRIDLINE_DISTANCE) {
+                g2d.setColor(MAJOR2_GRIDLINE_COLOR);
+                drawGrid(g2d, MAJOR2_GRIDLINE_SPACING, width, height);
+            }
+        }
+
+        // piirretään planeetat
         for (Planet planet : this.world.getPlanets()) {
             this.drawPlanet(g2d, planet);
         }
 
+        // piirretään mahdollinen nopeusvektori
         if (this.world.hasPendingPlanet()) {
-            //this.drawPlanet(g2d, this.pendingPlanet);
             this.drawVelocityVector(g2d, this.world.getPendingPlanet());
+        }
+    }
+
+    /**
+     * Palauttaa yhden pikselin "leveyden" avaruuden koordinaateissa. Ei käytetä
+     * suoraan getScalingFactoria, koska voitaisiin haluta laittaa skaalaus
+     * toimimaan eri asteikolla.
+     */
+    private double getPixelDistance() {
+        return this.getScalingFactor();
+    }
+
+    private void drawGrid(Graphics2D g2d, int spacing, int width, int height) {
+        int x, y, drawX, drawY;
+        for (x = (int) Math.floor(this.worldX(0) / spacing) * spacing; x <= this.worldX(width); x += spacing) {
+            drawX = this.screenX(x);
+            g2d.drawLine(drawX, 0, drawX, height);
+        }
+        for (y = (int) Math.floor(this.worldY(0) / spacing) * spacing; y <= this.worldY(height); y += spacing) {
+            drawY = this.screenY(y);
+            g2d.drawLine(0, drawY, width, drawY);
         }
     }
 
@@ -76,7 +133,7 @@ public class NbodyPanel extends JPanel {
 
         g2d.setColor(VECTOR_COLOR);
         g2d.drawLine(planetX, planetY, this.mouseX, this.mouseY);
-        
+
         SimpleVector helper = new SimpleVector(this.mouseX - planetX, this.mouseY - planetY);
         helper.scale(0.15);
         helper.rotate(Math.PI / 6);
