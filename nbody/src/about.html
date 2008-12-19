@@ -1,19 +1,31 @@
 <html>
 <head></head>
 <body>
-<pre>
-Quick help:
- - add planets by double clicking;
-   then click to place a velocity vector
- - modify planet properties at any time
-   from the side panel (try it!)
- - remove planets by clicking "remove planet"
- 
-Known issues:
- - numerical integration is (by definition)
+<h1>Quick help:</h1>
+<ul>
+<li>add planets by double clicking;
+   then click to place a velocity vector</li>
+<li>modify planet properties at any time
+   from the side panel (try it!)</li>
+<li>remove planets by clicking "remove planet"</li>
+<li>move view around by dragging background</li>
+<li>zoom by using scrollwheel (zooms where
+   you point a la Google Maps)</li>
+<li>the direction is to the east when the
+   slider is at zero; it increases counter-clockwise</li>
+<li>you can set the default mass for new planets by setting the mass in the mass text box and pressing return</li>
+</ul>
+
+<h1>Known issues:</h1>
+<ul>
+<li>numerical integration is (by definition)
    inaccurate, and if planets experience
-   extreme accelerations, they escape
- - about dialog is a work in progress
-</pre>
+   extreme accelerations, they escape</li>
+<li>direction as a slider from 0 to 2*pi is
+   unintuitive; however, I wanted to also
+   show the linear velocity and couldn't
+   come up with a better arrangement</li>
+<li>the app isn't very usable at small resolutions since the side panel takes some space</li>
+</ul>
 </body>
 </html>

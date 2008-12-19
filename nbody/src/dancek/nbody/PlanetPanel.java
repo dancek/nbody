@@ -21,7 +21,6 @@ public class PlanetPanel extends javax.swing.JPanel {
 
     // planeetta, joka otetaan paneeliin jos ei ole planeettoja.
     private static Planet NULL_PLANET = new Planet(0, 0, 0, 0, 0, "(no planet)", Color.black);
-
     private Planet planet;
     private boolean updateAllFields;
     private NbodyFrame nbodyFrame;
@@ -43,7 +42,7 @@ public class PlanetPanel extends javax.swing.JPanel {
         this.planetListBox.getModel().setSelectedItem(planet);
         this.updateAllFields = true;
         this.updateComponentValues();
-        this.updateZoom();
+        this.updateZoomAndPosition();
     }
 
     public void setWorld(World world) {
@@ -55,14 +54,16 @@ public class PlanetPanel extends javax.swing.JPanel {
             this.setPlanet(NULL_PLANET);
         }
     }
-    
+
     public boolean isGridEnabled() {
         return this.gridCheckBox.isSelected();
     }
 
+    public boolean isPlanetNamesEnabled() {
+        return this.planetNamesCheckBox.isSelected();
+    }
 
-    private void zoomBoxChanged(java.awt.event.ActionEvent evt) {// GEN-FIRST:
-        // event_zoomBoxChanged
+    private void zoomBoxChanged(java.awt.event.ActionEvent evt) {
         try {
             double zoom = Double.parseDouble((String) this.zoomComboBox.getSelectedItem());
             this.nbodyFrame.getNbodyPanel().setScalingFactor(zoom);
@@ -71,15 +72,15 @@ public class PlanetPanel extends javax.swing.JPanel {
             return;
         }
 
-    }// GEN-LAST:event_zoomBoxChanged
+    }
 
     private void removePlanetButtonClicked(java.awt.event.ActionEvent evt) {
         Planet removedPlanet = (Planet) this.planetListBox.getSelectedItem();
 
         // katsotaan tyhjeneekö planeettalista
-        if (this.planetListBox.getModel().getSize() == 1)
+        if (this.planetListBox.getModel().getSize() == 1) {
             this.setPlanet(NULL_PLANET);
-
+        }
         this.world.removePlanet(removedPlanet);
         this.planetListBox.removeItem(removedPlanet);
     }
@@ -98,35 +99,29 @@ public class PlanetPanel extends javax.swing.JPanel {
         this.updatePlanetList();
     }
 
-    private void massSliderChanged(javax.swing.event.ChangeEvent evt) {// GEN-
-        // FIRST:
-        // event_massSliderChanged
-
+    private void massSliderChanged(javax.swing.event.ChangeEvent evt) {
         double mass = 0.1 * this.massSlider.getValue() * Math.pow(10, this.massExponentSlider.getValue());
         this.massTextField.setText(String.format("%.1e", mass));
         this.planet.setMass(mass);
-        // this.updateVisuals();
-    }// GEN-LAST:event_massSliderChanged
+    }
 
     private void massTextFieldChanged(java.awt.event.KeyEvent evt) {
-        // event_massTextFieldChanged
         // toimitaan vain, jos painettiin enteriä
         if (evt.getKeyChar() != '\n') {
             return;
         }
         try {
             double mass = Double.parseDouble(this.massTextField.getText());
+            this.nbodyFrame.setDefaultMass(mass);
             this.planet.setMass(mass);
             this.updateAllFields = true;
-            // this.updateVisuals();
         } catch (NumberFormatException e) {
             // ei haittaa mitään, tällöin ei vain tehdä mitään arvoille.
             return;
         }
-    }// GEN-LAST:event_massTextFieldChanged
+    }
 
     private void nameTextFieldChanged(java.awt.event.KeyEvent evt) {
-        // event_nameTextFieldChanged
         // toimitaan vain, jos painettiin enteriä
         if (evt.getKeyChar() != '\n') {
             return;
@@ -134,40 +129,27 @@ public class PlanetPanel extends javax.swing.JPanel {
 
         this.planet.setName(this.nameTextField.getText());
         this.updateAllFields = true;
-    }// GEN-LAST:event_nameTextFieldChanged
+        this.updatePlanetList();
+    }
 
-    private void velocitySliderChanged(java.awt.event.MouseEvent evt) {// GEN-
-        // FIRST:
-        // event_velocitySliderChanged
-
+    private void velocitySliderChanged(java.awt.event.MouseEvent evt) {
         this.planet.setVelocityPolar(this.velocitySlider.getValue(), this.directionSlider.getValue() / 1000.0);
-    }// GEN-LAST:event_velocitySliderChanged
+    }
 
-    private void planetColorButtonClicked(java.awt.event.ActionEvent evt) {//GEN-
-        // FIRST
-        // :
-        // event_planetColorButtonClicked
-
+    private void planetColorButtonClicked(java.awt.event.ActionEvent evt) {
         Color newColor = JColorChooser.showDialog(this, "Choose planet color", this.planet.getColor());
 
         if (newColor != null) {
             this.planet.setColor(newColor);
             this.updateAllFields = true;
-            // this.updateVisuals();
         }
-    }// GEN-LAST:event_planetColorButtonClicked
+    }
 
-    private void planetChangedFromList(java.awt.event.ActionEvent evt) {// GEN-
-        // FIRST
-        // :
-        // event_planetChangedFromList
-
+    private void planetChangedFromList(java.awt.event.ActionEvent evt) {
         this.setPlanet((Planet) this.planetListBox.getSelectedItem());
-    }// GEN-LAST:event_planetChangedFromList
+    }
 
-    private void nextPlanet(java.awt.event.ActionEvent evt) {// GEN-FIRST:
-        // event_nextPlanet
-
+    private void nextPlanet(java.awt.event.ActionEvent evt) {
         int index = this.planetListBox.getSelectedIndex() + 1; // halutaan
         // seuraava
 
@@ -182,7 +164,7 @@ public class PlanetPanel extends javax.swing.JPanel {
         }
         this.planetListBox.setSelectedIndex(index);
         this.setPlanet((Planet) this.planetListBox.getSelectedItem());
-    }// GEN-LAST:event_nextPlanet
+    }
 
     protected void updateComponentValues() {
         this.xPositionTextField.setText(String.format("%.2f", this.planet.getPosition().x));
@@ -212,15 +194,21 @@ public class PlanetPanel extends javax.swing.JPanel {
         Object[] planetArray = this.world.getPlanets().toArray();
 
         // jos ei ole planeettoja, laitetaan "tyhjä planeetta"
-        if (planetArray.length == 0)
-            planetArray = new Object[] { NULL_PLANET };
-
+        if (planetArray.length == 0) {
+            planetArray = new Object[]{NULL_PLANET};
+        }
         DefaultComboBoxModel planetComboBoxModel = new DefaultComboBoxModel(planetArray);
         this.planetListBox.setModel(planetComboBoxModel);
     }
 
-    protected void updateZoom() {
+    protected void updateZoomAndPosition() {
         this.zoomComboBox.setSelectedItem(String.format("%.4f", this.nbodyFrame.getNbodyPanel().getScalingFactor()));
+        this.xViewTextField.setText("" + (int) this.nbodyFrame.getNbodyPanel().getViewX());
+        this.yViewTextField.setText("" + (int) this.nbodyFrame.getNbodyPanel().getViewY());
+    }
+    
+    protected boolean isSimulationPaused() {
+        return this.startStopButton.isSelected();
     }
 
     // HUOM! NÄMÄ ATTRIBUUTIT OVAT NETBEANSIN AUTOMAATTISESTI
@@ -234,6 +222,7 @@ public class PlanetPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JSeparator jSeparator1;
@@ -247,15 +236,18 @@ public class PlanetPanel extends javax.swing.JPanel {
     private javax.swing.JButton nextPlanetButton;
     private javax.swing.JButton planetColorButton;
     private javax.swing.JComboBox planetListBox;
+    private javax.swing.JCheckBox planetNamesCheckBox;
     private javax.swing.JButton removeOtherPlanetsButton;
     private javax.swing.JButton removePlanetButton;
     private javax.swing.JToggleButton startStopButton;
     private javax.swing.JSlider velocitySlider;
     private javax.swing.JTextField xPositionTextField;
+    private javax.swing.JTextField xViewTextField;
     private javax.swing.JTextField yPositionTextField;
+    private javax.swing.JTextField yViewTextField;
     private javax.swing.JComboBox zoomComboBox;
     // End of variables declaration//GEN-END:variables
-    
+
     /**
      * Metodi, joka asettelee komponentit paikoilleen. HUOM! TÄMÄ METODI EI OLE
      * MINUN KIRJOITTAMANI, vaan NetBeansin GUI-editorin generoima.
@@ -291,6 +283,10 @@ public class PlanetPanel extends javax.swing.JPanel {
         jLabel6 = new javax.swing.JLabel();
         jSeparator4 = new javax.swing.JSeparator();
         gridCheckBox = new javax.swing.JCheckBox();
+        planetNamesCheckBox = new javax.swing.JCheckBox();
+        xViewTextField = new javax.swing.JTextField();
+        yViewTextField = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
 
         setAutoscrolls(true);
         setMinimumSize(new java.awt.Dimension(300, 400));
@@ -509,7 +505,7 @@ public class PlanetPanel extends javax.swing.JPanel {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("View"));
 
-        startStopButton.setText("Pause simulation");
+        startStopButton.setText("Pause");
         startStopButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 startStopButtonClicked(evt);
@@ -531,6 +527,27 @@ public class PlanetPanel extends javax.swing.JPanel {
         gridCheckBox.setSelected(true);
         gridCheckBox.setText("Grid");
 
+        planetNamesCheckBox.setSelected(true);
+        planetNamesCheckBox.setText("Names");
+
+        xViewTextField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        xViewTextField.setText("0");
+        xViewTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                viewTextFieldKeyTyped(evt);
+            }
+        });
+
+        yViewTextField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        yViewTextField.setText("0");
+        yViewTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                viewTextFieldKeyTyped(evt);
+            }
+        });
+
+        jLabel7.setText("Position:");
+
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -538,30 +555,48 @@ public class PlanetPanel extends javax.swing.JPanel {
             .add(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(startStopButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
+                    .add(startStopButton)
+                    .add(gridCheckBox)
+                    .add(planetNamesCheckBox))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jSeparator4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jPanel2Layout.createSequentialGroup()
-                        .add(gridCheckBox)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jSeparator4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jLabel6)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(zoomComboBox, 0, 122, Short.MAX_VALUE)))
+                        .add(zoomComboBox, 0, 97, Short.MAX_VALUE))
+                    .add(jLabel7)
+                    .add(jPanel2Layout.createSequentialGroup()
+                        .add(xViewTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(yViewTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(startStopButton)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(gridCheckBox, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jSeparator4)
-                    .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                        .add(jLabel6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(zoomComboBox)))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jPanel2Layout.createSequentialGroup()
+                        .add(startStopButton)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                        .add(gridCheckBox)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(planetNamesCheckBox))
+                    .add(jPanel2Layout.createSequentialGroup()
+                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(jLabel6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(zoomComboBox))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                        .add(jLabel7)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(yViewTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(xViewTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .add(10, 10, 10))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jSeparator4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
@@ -580,4 +615,18 @@ public class PlanetPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+private void viewTextFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_viewTextFieldKeyTyped
+    // toimitaan vain, jos painettiin enteriä
+    if (evt.getKeyChar() == '\n') {
+        try {
+            double x = Double.parseDouble(this.xViewTextField.getText());
+            double y = Double.parseDouble(this.yViewTextField.getText());
+
+            this.nbodyFrame.getNbodyPanel().setViewCenter(x, y);
+        } catch (NumberFormatException e) {
+            // ei voi mitään... poikkeus tulee ennen kuin näkymää siirretään, se siis
+            // jää siirtämättä.
+        }
+    }
+}//GEN-LAST:event_viewTextFieldKeyTyped
 }

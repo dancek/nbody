@@ -38,8 +38,8 @@ public class NbodyPanel extends JPanel {
     private static final Color VECTOR_COLOR = Color.gray;
 
     private World world;
-    private int xOffset;
-    private int yOffset;
+    private double xOffset;
+    private double yOffset;
     private double scalingFactor;
     private int panelCenterXOffset;
     private int panelCenterYOffset;
@@ -95,9 +95,10 @@ public class NbodyPanel extends JPanel {
             }
         }
 
+        boolean drawNames = this.nbodyFrame.isPlanetNamesEnabled();
         // piirretään planeetat
         for (Planet planet : this.world.getPlanets()) {
-            this.drawPlanet(g2d, planet);
+            this.drawPlanet(g2d, planet, drawNames);
         }
 
         // piirretään mahdollinen nopeusvektori
@@ -139,7 +140,7 @@ public class NbodyPanel extends JPanel {
         helper.rotate(Math.PI / 6);
     }
 
-    private void drawPlanet(Graphics2D g2d, Planet planet) {
+    private void drawPlanet(Graphics2D g2d, Planet planet, boolean drawNames) {
         int x = this.screenX(planet.getPosition().x);
         int y = this.screenY(planet.getPosition().y);
         int size = (int) Math.ceil(planet.getSize() * this.scalingFactor);
@@ -149,6 +150,11 @@ public class NbodyPanel extends JPanel {
         // vähennetään koordinaateista ympyrän säde, jotta piirros tulee
         // keskikohdan mukaan.
         g2d.fillOval(x - size / 2, y - size / 2, size, size);
+
+        if (drawNames) {
+            g2d.setColor(Color.gray);
+            g2d.drawString(planet.getName(), x + size / 2, y - size / 2);
+        }
     }
 
     private int screenX(double x) {
@@ -167,10 +173,10 @@ public class NbodyPanel extends JPanel {
         return (y - this.panelCenterYOffset) / this.scalingFactor - this.yOffset;
     }
 
-    public Planet addPendingPlanet(int x, int y) {
+    public Planet addPendingPlanet(int x, int y, double mass) {
         double planetX = this.worldX(x);
         double planetY = this.worldY(y);
-        this.world.addPendingPlanet(new Planet(planetX, planetY));
+        this.world.addPendingPlanet(new Planet(planetX, planetY, mass));
         this.mouseX = x;
         this.mouseY = y;
         return this.world.getPendingPlanet();
@@ -218,5 +224,34 @@ public class NbodyPanel extends JPanel {
      */
     protected void setWorld(World world) {
         this.world = world;
+    }
+
+    /**
+     * Asettaa näkymän keskikohdan kohtaan (x,y).
+     * 
+     * @param x koordinaatti
+     * @param y koordinaatti
+     */
+    public void setViewCenter(double x, double y) {
+        this.xOffset = -x;
+        this.yOffset = -y;
+    }
+
+    /**
+     * Antaa näkymän x-koordinaatin.
+     * 
+     * @return näkymän x-koordinaatti
+     */
+    public double getViewX() {
+        return -this.xOffset;
+    }
+
+    /**
+     * Antaa näkymän y-koordinaatin.
+     * 
+     * @return näkymän y-koordinaatti
+     */
+    public double getViewY() {
+        return -this.yOffset;
     }
 }

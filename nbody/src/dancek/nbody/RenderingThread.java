@@ -18,8 +18,8 @@ import javax.swing.JPanel;
  */
 public class RenderingThread {
 
-    // montako kertaa sekunnissa ajetaan (50-60 on osoittautunut sopivaksi,
-    // enemmänkin toki voisi laittaa mutta alkaa syödä konetehoa)
+    // montako kertaa sekunnissa ajetaan (50-60 on kohtuullinen, enempi parempi
+    // mutta vaatisi aika paljon tehoa)
     private static final int PHYSICS_FPS = 60;
     protected static final double PHYSICS_TIMESTEP = 1.0 / PHYSICS_FPS;
 

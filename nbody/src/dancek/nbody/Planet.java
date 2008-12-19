@@ -11,7 +11,7 @@ import java.awt.Color;
  */
 public class Planet extends PhysicalObject {
 
-    private static final double DEFAULT_MASS = 1e10;
+    protected static final double DEFAULT_MASS = 1e10;
 
     private static int nextPlanetNumber = 0;
 
@@ -33,6 +33,10 @@ public class Planet extends PhysicalObject {
 
     public Planet(double x, double y) {
         this(x, y, 0, 0, DEFAULT_MASS);
+    }
+
+    public Planet(double x, double y, double mass) {
+        this(x, y, 0, 0, mass);
     }
 
     /**

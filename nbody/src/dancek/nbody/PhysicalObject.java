@@ -43,7 +43,7 @@ public abstract class PhysicalObject {
     public SimpleVector getPosition() {
         return this.position;
     }
-    
+
     public SimpleVector getVelocity() {
         return this.velocity;
     }
@@ -72,8 +72,15 @@ public abstract class PhysicalObject {
         this.lastPosition.add(this.position);
     }
 
+    /**
+     * Asettaa nopeuden polaarisissa koordinaateissa. Käytetään -thetaa, jotta
+     * saadaan kasvu vastapäivään (standardi).
+     * 
+     * @param r vauhti
+     * @param theta suunta
+     */
     protected void setVelocityPolar(double r, double theta) {
-        this.setVelocity(r * Math.cos(theta), r * Math.sin(theta));
+        this.setVelocity(r * Math.cos(-theta), r * Math.sin(-theta));
     }
 
     public double getLinearVelocity() {
@@ -81,7 +88,7 @@ public abstract class PhysicalObject {
     }
 
     public double getDirection() {
-        double angle = Math.atan2(this.velocity.y, this.velocity.x);
+        double angle = -Math.atan2(this.velocity.y, this.velocity.x);
         return angle >= 0 ? angle : angle + 2 * Math.PI;
     }
 
@@ -90,6 +97,7 @@ public abstract class PhysicalObject {
      * joka on Euleria selvästi tarkempi (Euler on se intuitiivisin toteutus).
      * 
      * Kaavat ovat siis seuraavat:
+     * 
      * <pre>
      *  Euler: x(t+dt) = x(t) + v(t)*dt
      * Verlet: x(t+dt) = 2*x(t) - x(t-dt) + a(t)*dt*dt

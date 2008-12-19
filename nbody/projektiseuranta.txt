@@ -51,5 +51,6 @@ YHTEENSÄ 49h
       7h: ui-päivitykset
       1h: aurinkokunta
       
-18.12. 1h: grid, about-laatikko
-	
+18.12. 3h: grid, about-laatikko
+
+19.12. 1h: bugikorjauksia

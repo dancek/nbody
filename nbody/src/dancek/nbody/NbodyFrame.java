@@ -45,8 +45,10 @@ public class NbodyFrame extends JFrame {
     private int mouseDragLastY;
     private JScrollPane scrollPane;
     private AboutDialog aboutDialog;
+    public double defaultMass;
 
     public NbodyFrame(World world) {
+        this.defaultMass = Planet.DEFAULT_MASS;
         this.setJMenuBar(this.createMenuBar());
 
         this.nbodyPanel = new NbodyPanel(this, world);
@@ -90,6 +92,9 @@ public class NbodyFrame extends JFrame {
 
         if (this.simulationHandle != null)
             this.simulationHandle.cancel(false);
+        
+        this.world.setSimulationRunning(!this.planetPanel.isSimulationPaused());
+        
         this.simulationHandle = RenderingThread.startRendering(this.world, this.nbodyPanel, this.planetPanel);
     }
 
@@ -164,7 +169,7 @@ public class NbodyFrame extends JFrame {
     protected void about() {
         if (this.aboutDialog == null)
             this.aboutDialog = new AboutDialog(this, false);
-        
+
         this.aboutDialog.setVisible(true);
     }
 
@@ -245,7 +250,7 @@ public class NbodyFrame extends JFrame {
 
             // tuplaklikkauksella lisätään planeetta
             if (e.getClickCount() == 2) {
-                Planet pendingPlanet = nbodyPanel.addPendingPlanet(e.getX(), e.getY());
+                Planet pendingPlanet = nbodyPanel.addPendingPlanet(e.getX(), e.getY(), defaultMass);
                 planetPanel.updatePlanetList();
                 planetPanel.setPlanet(pendingPlanet);
                 statusLabel.setText("Click to set velocity");
@@ -272,6 +277,12 @@ public class NbodyFrame extends JFrame {
             nbodyPanel.moveView(e.getX() - mouseDragLastX, e.getY() - mouseDragLastY);
             mouseDragLastX = e.getX();
             mouseDragLastY = e.getY();
+            planetPanel.updateZoomAndPosition();
+
+            // jos planeetan asettaminen on kesken, ilmoitetaan koordinaatit
+            // vektorin piirtoa varten
+            if (world.hasPendingPlanet())
+                nbodyPanel.setMouse(e.getX(), e.getY());
         }
 
         public void mouseMoved(MouseEvent e) {
@@ -284,7 +295,7 @@ public class NbodyFrame extends JFrame {
         public void mouseWheelMoved(MouseWheelEvent e) {
             // kutsutaan zoomausmetodia
             nbodyPanel.zoom(e.getX(), e.getY(), e.getWheelRotation());
-            planetPanel.updateZoom();
+            planetPanel.updateZoomAndPosition();
         }
     }
 
@@ -292,9 +303,24 @@ public class NbodyFrame extends JFrame {
      * Kertoo piirretäänkö ruudukko. Kysytään NbodyFramen kautta, koska en ollut
      * varma haluanko valinnan valikkoon vai sivupaneeliin.
      * 
-     * @return
+     * @return piirretäänkö ruudukko
      */
     protected boolean isGridEnabled() {
         return this.planetPanel.isGridEnabled();
+    }
+
+    /**
+     * Kertoo näytetäänkö näkymässä planeettojen nimet. Kysytään NbodyFramen
+     * kautta, koska en ollut varma haluanko valinnan valikkoon vai
+     * sivupaneeliin.
+     * 
+     * @return piirretäänkö planeettojen nimet
+     */
+    public boolean isPlanetNamesEnabled() {
+        return this.planetPanel.isPlanetNamesEnabled();
+    }
+    
+    public void setDefaultMass(double mass) {
+        this.defaultMass = mass;
     }
 }
