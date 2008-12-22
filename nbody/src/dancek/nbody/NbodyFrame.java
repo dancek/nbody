@@ -240,6 +240,7 @@ public class NbodyFrame extends JFrame {
                 return;
 
             this.setWorld(World.load(file));
+            this.statusLabel.setText(file.getName() + " loaded.");
         } catch (Exception e) {
             // ongelmatilanteissa informoidaan käyttäjää
             JOptionPane.showMessageDialog(this, "The file is not a proper world file.", "Unsuitable file",
@@ -265,7 +266,7 @@ public class NbodyFrame extends JFrame {
                 file = new File(file.getCanonicalPath() + "." + WORLD_FILE_EXTENSION);
 
             this.world.save(file);
-
+            this.statusLabel.setText(file.getName() + " saved.");
         } catch (IOException e) {
             // ongelmatilanteissa informoidaan käyttäjää
             JOptionPane.showMessageDialog(this, "The file could not be written.", "Problem saving world",
@@ -299,9 +300,9 @@ public class NbodyFrame extends JFrame {
         JMenu worldMenu = new JMenu("World");
         JMenu helpMenu = new JMenu(("Help"));
 
+        JMenuItem newWorld = new JMenuItem(("New"));
         JMenuItem loadWorld = new JMenuItem(("Load"));
         JMenuItem saveWorld = new JMenuItem(("Save"));
-        JMenuItem newWorld = new JMenuItem(("New"));
         JMenuItem quit = new JMenuItem(("Quit"));
 
         JMenuItem about = new JMenuItem(("About..."));

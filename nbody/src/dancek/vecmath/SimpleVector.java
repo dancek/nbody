@@ -8,21 +8,34 @@ package dancek.vecmath;
  * tuntia.
  * 
  * @author Hannu Hartikainen
- * 
  */
 public class SimpleVector implements Cloneable {
 
     public volatile double x;
     public volatile double y;
 
+    /**
+     * Luo vektorin.
+     * 
+     * @param x x-komponentti
+     * @param y y-komponentti
+     */
     public SimpleVector(double x, double y) {
         this.set(x, y);
     }
 
+    /**
+     * Luo nollavektorin.
+     */
     public SimpleVector() {
         this.set(0, 0);
     }
 
+    /**
+     * Antaa vektorin pituuden.
+     * 
+     * @return pituus
+     */
     public double length() {
         return Math.sqrt(this.lengthSquared());
     }
@@ -56,29 +69,56 @@ public class SimpleVector implements Cloneable {
         this.y += vec.y;
     }
 
+    /**
+     * Asettaa vektorin arvon.
+     * 
+     * @param x x-komponentti
+     * @param y y-komponentti
+     */
     public void set(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
+    /**
+     * Asettaa vektorin arvon.
+     * 
+     * @param vec vektori, johon arvo asetetaan
+     */
     public void set(SimpleVector vec) {
         this.set(vec.x, vec.y);
     }
 
+    /**
+     * Vähentää vektorista toisen vektorin.
+     * 
+     * @param vec toinen vektori
+     */
     public void sub(SimpleVector vec) {
         this.x -= vec.x;
         this.y -= vec.y;
     }
 
+    /*
+     * (non-Javadoc) Palauttaa kloonin vektorista.
+     * 
+     * @see java.lang.Object#clone()
+     */
     public SimpleVector clone() {
         return new SimpleVector(this.x, this.y);
     }
 
+    /**
+     * Muuttaa vektorin vastavektorikseen.
+     */
     public void negate() {
         this.x = -this.x;
         this.y = -this.y;
     }
 
+    /**
+     * Normalisoi vektorin (suunta säilyy, pituudeksi tulee 1).
+     */
     public void normalize() {
         this.scale(1.0d / this.length());
     }

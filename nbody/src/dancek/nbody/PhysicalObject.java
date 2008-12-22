@@ -17,6 +17,15 @@ public abstract class PhysicalObject {
     private volatile SimpleVector acceleration;
     private volatile SimpleVector forceSum;
 
+    /**
+     * Luo uuden kappaleen.
+     * 
+     * @param xPosition sijainnin x-komponentti
+     * @param yPosition sijainnin y-komponentti
+     * @param xVelocity nopeuden x-komponentti
+     * @param yVelocity nopeuden y-komponentti
+     * @param mass massa
+     */
     public PhysicalObject(double xPosition, double yPosition, double xVelocity, double yVelocity, double mass) {
         this.position = new SimpleVector(xPosition, yPosition);
         this.acceleration = new SimpleVector();
@@ -26,72 +35,66 @@ public abstract class PhysicalObject {
         this.setVelocity(xVelocity, yVelocity);
     }
 
-    public PhysicalObject(SimpleVector pos, SimpleVector vel, double mass) {
-        this.position = pos;
-        this.velocity = vel;
-        this.acceleration = new SimpleVector();
-        this.forceSum = new SimpleVector();
-        this.mass = mass;
-    }
-
-    public synchronized void resetForce() {
-        this.forceSum.set(0, 0);
-    }
-
+    /**
+     * Lisää kappaleeseen vaikuttavan voiman.
+     * 
+     * @param force voimavektori
+     */
     public void addForce(SimpleVector force) {
         this.forceSum.add(force);
     }
 
-    public SimpleVector getPosition() {
-        return this.position;
-    }
-
-    public SimpleVector getVelocity() {
-        return this.velocity;
-    }
-
-    public double getMass() {
-        return this.mass;
-    }
-
-    protected void setMass(double mass) {
-        this.mass = mass;
-    }
-
-    protected synchronized void setVelocity(double x, double y) {
-        if (this.velocity != null)
-            this.velocity.set(x, y);
-        else
-            this.velocity = new SimpleVector(x, y);
-
-        /*
-         * Verlet tarvitsee edellisen sijainnin, mikä on ensimmäisen askeleen
-         * aikana tai nopeuden muutoksen jälkeen ongelma. Tämä ei ole ihan oikea
-         * tapa ratkaista ongelmaa, mutta virheet jää kuitenkin aika pieneksi.
-         */
-        this.lastPosition = this.velocity.clone();
-        this.lastPosition.scale(-RenderingThread.PHYSICS_TIMESTEP);
-        this.lastPosition.add(this.position);
+    /**
+     * Antaa liikesuunnan (nopeuden suuntakulma).
+     * 
+     * @return liikesuunta
+     */
+    public double getDirection() {
+        double angle = -Math.atan2(this.velocity.y, this.velocity.x);
+        return angle >= 0 ? angle : angle + 2 * Math.PI;
     }
 
     /**
-     * Asettaa nopeuden polaarisissa koordinaateissa. Käytetään -thetaa, jotta
-     * saadaan kasvu vastapäivään (standardi).
+     * Antaa vauhdin (nopeuden itseisarvo).
      * 
-     * @param r vauhti
-     * @param theta suunta
+     * @return vauhti
      */
-    protected void setVelocityPolar(double r, double theta) {
-        this.setVelocity(r * Math.cos(-theta), r * Math.sin(-theta));
-    }
-
     public double getLinearVelocity() {
         return this.velocity.length();
     }
 
-    public double getDirection() {
-        double angle = -Math.atan2(this.velocity.y, this.velocity.x);
-        return angle >= 0 ? angle : angle + 2 * Math.PI;
+    /**
+     * Antaa kappaleen massan.
+     * 
+     * @return massa
+     */
+    public double getMass() {
+        return this.mass;
+    }
+
+    /**
+     * Antaa kappaleen sijainnin.
+     * 
+     * @return sijainti
+     */
+    public SimpleVector getPosition() {
+        return this.position;
+    }
+
+    /**
+     * Antaa kappaleen nopeuden.
+     * 
+     * @return nopeus
+     */
+    public SimpleVector getVelocity() {
+        return this.velocity;
+    }
+
+    /**
+     * Nollaa kappaleeseen vaikuttavat voimat.
+     */
+    public synchronized void resetForce() {
+        this.forceSum.set(0, 0);
     }
 
     /**
@@ -124,5 +127,48 @@ public abstract class PhysicalObject {
         this.position.y = 2 * this.position.y - this.lastPosition.y + this.acceleration.y * dt * dt;
 
         this.lastPosition = newLastPosition;
+    }
+
+    /**
+     * Asettaa kappaleen massan.
+     * 
+     * @param mass massa
+     */
+    protected void setMass(double mass) {
+        this.mass = mass;
+    }
+
+    /**
+     * Asettaa kappaleen nopeuden.
+     * 
+     * @param x nopeuden x-komponentti
+     * @param y nopeuden y-komponentti
+     */
+    protected synchronized void setVelocity(double x, double y) {
+        if (this.velocity != null)
+            this.velocity.set(x, y);
+        else
+            this.velocity = new SimpleVector(x, y);
+
+        /*
+         * Verlet (käytössä oleva numeerinen integrointimenetelmä) tarvitsee
+         * edellisen sijainnin, mikä on ensimmäisen askeleen aikana tai nopeuden
+         * muutoksen jälkeen ongelma. Tämä ei ole ihan oikea tapa ratkaista
+         * ongelmaa, mutta virheet jäävät kuitenkin aika pieneksi.
+         */
+        this.lastPosition = this.velocity.clone();
+        this.lastPosition.scale(-RenderingThread.PHYSICS_TIMESTEP);
+        this.lastPosition.add(this.position);
+    }
+
+    /**
+     * Asettaa nopeuden polaarisissa koordinaateissa. Käytetään -thetaa, jotta
+     * saadaan kasvu vastapäivään (standardi).
+     * 
+     * @param r vauhti
+     * @param theta suunta
+     */
+    protected void setVelocityPolar(double r, double theta) {
+        this.setVelocity(r * Math.cos(-theta), r * Math.sin(-theta));
     }
 }
