@@ -104,6 +104,7 @@ public class NbodyFrame extends JFrame {
             planetPanel.updateZoomAndPosition();
         }
     }
+
     /**
      * Maailmatiedostoihin liittyvät vakiot (pääte .world).
      */
@@ -180,6 +181,11 @@ public class NbodyFrame extends JFrame {
         return this.planetPanel.isPlanetNamesEnabled();
     }
 
+    /**
+     * Asettaa oletusmassan uusille planeetoille.
+     * 
+     * @param mass massa
+     */
     public void setDefaultMass(double mass) {
         this.defaultMass = mass;
     }
@@ -194,6 +200,11 @@ public class NbodyFrame extends JFrame {
         this.aboutDialog.setVisible(true);
     }
 
+    /**
+     * Antaa käytössä olevan NbodyPanel-olion.
+     * 
+     * @return NbodyPanel-olio
+     */
     protected NbodyPanel getNbodyPanel() {
         return this.nbodyPanel;
     }
@@ -212,7 +223,15 @@ public class NbodyFrame extends JFrame {
      * Hoitaa maailman lataamisen.
      */
     protected void loadWorld() {
-        JFileChooser fileChooser = new JFileChooser();
+        JFileChooser fileChooser;
+        
+        try {
+            fileChooser = new JFileChooser();
+        } catch (Exception e) {
+            this.setWorld(Nbody.getDefaultWorld());
+            return;
+        }
+        
         fileChooser.setFileFilter(WORLD_FILE_FILTER);
         fileChooser.showOpenDialog(this);
         try {
@@ -254,6 +273,11 @@ public class NbodyFrame extends JFrame {
         }
     }
 
+    /**
+     * Kytkee simulaation päälle tai pois.
+     * 
+     * @return onko simulaatio käynnissä
+     */
     protected boolean toggleSimulation() {
         if (this.world.isSimulationRunning()) {
             this.world.setSimulationRunning(false);
@@ -329,6 +353,12 @@ public class NbodyFrame extends JFrame {
         return menubar;
     }
 
+    /**
+     * Asettaa käytössä olevan maailman. Huolehtii myös fysiikkamallinnuksen ja
+     * piirtämisen käynnistämisestä.
+     * 
+     * @param world maailma
+     */
     private void setWorld(World world) {
         this.world = world;
         this.nbodyPanel.setWorld(this.world);

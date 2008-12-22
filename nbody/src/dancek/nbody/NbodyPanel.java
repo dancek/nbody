@@ -332,10 +332,6 @@ public class NbodyPanel extends JPanel {
 
         g2d.setColor(VECTOR_COLOR);
         g2d.drawLine(planetX, planetY, this.mouseX, this.mouseY);
-
-        SimpleVector helper = new SimpleVector(this.mouseX - planetX, this.mouseY - planetY);
-        helper.scale(0.15);
-        helper.rotate(Math.PI / 6);
     }
 
     /**

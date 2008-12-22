@@ -8,6 +8,8 @@ import dancek.vecmath.SimpleVector;
  * @author Hannu Hartikainen
  */
 public abstract class PhysicalObject {
+
+    // kentät ovat volatileja varmuuden vuoksi, koska käytetään useampaa säiettä
     private volatile double mass;
     private volatile SimpleVector position;
     private volatile SimpleVector lastPosition;

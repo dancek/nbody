@@ -20,8 +20,26 @@ public class Nbody {
     public static final String VERSION = "1.0";
 
     /**
-     * Main-metodi. Yrittää ladata maailman tiedostosta; jos ei onnistu, käyttää
-     * Worldin staattista metodia luomaan maailman.
+     * Oletusmaailman pulauttava metodi. Yrittää ladata maailman tiedostosta;
+     * jos ei onnistu, käyttää Worldin staattista metodia luomaan maailman.
+     * 
+     * @return oletusmaailma
+     */
+    public static World getDefaultWorld() {
+        World world = null;
+
+        try {
+            InputStream is = Nbody.class.getResourceAsStream(DEFAULT_WORLD_FILENAME);
+            world = World.load(is);
+        } catch (Exception e) {
+            world = World.quickTestWorld();
+        }
+
+        return world;
+    }
+
+    /**
+     * Main-metodi. Luo NbodyFramen.
      * 
      * @param args komentoriviargumentit
      */
@@ -29,16 +47,7 @@ public class Nbody {
         // käytetään invokeLater-metodia, jotta ei törmätä säieongelmiin
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                World world = null;
-
-                try {
-                    InputStream is = this.getClass().getResourceAsStream(DEFAULT_WORLD_FILENAME);
-                    world = World.load(is);
-                } catch (Exception e) {
-                    world = World.quickTestWorld();
-                } finally {
-                    new NbodyFrame(world);
-                }
+                new NbodyFrame(getDefaultWorld());
             }
         });
     }

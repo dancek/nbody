@@ -1,6 +1,3 @@
-/**
- * 
- */
 package dancek.vecmath;
 
 /**
@@ -84,9 +81,5 @@ public class SimpleVector implements Cloneable {
 
     public void normalize() {
         this.scale(1.0d / this.length());
-    }
-
-    public void rotate(double d) {
-        
     }
 }
