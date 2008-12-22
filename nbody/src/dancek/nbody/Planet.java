@@ -15,7 +15,7 @@ public class Planet extends PhysicalObject {
 
     private static int nextPlanetNumber = 0;
 
-    private int size;
+    private int radius;
     private String name;
 
     private Color color;
@@ -52,8 +52,8 @@ public class Planet extends PhysicalObject {
         return this.color;
     }
 
-    public int getSize() {
-        return this.size;
+    public int getRadius() {
+        return this.radius;
     }
 
     public String getName() {
@@ -66,9 +66,9 @@ public class Planet extends PhysicalObject {
 
     protected void setMass(double mass) {
         super.setMass(mass);
-        this.size = (int) Math.log(mass);
-        if (this.size < 3)
-            this.size = 3;
+        this.radius = (int) Math.log10(mass);
+        if (this.radius < 1)
+            this.radius = 1;
     }
 
     public String toString() {

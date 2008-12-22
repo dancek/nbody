@@ -3,7 +3,6 @@ package dancek.nbody;
 import java.awt.Color;
 import java.util.ArrayList;
 
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JColorChooser;
 
@@ -12,8 +11,12 @@ import javax.swing.JColorChooser;
  * AUTOMAATTISESTI GENEROITUA KOODIA. Tarkemmin sanottuna initComponents-metodi
  * ja siihen liittyvät komponenttiattribuutit ovat NetBeans 6.1:n graafisen
  * GUI-editorin tuotosta. Olen toki käyttänyt editoria itse (mikä vaatii kyllä
- * myöskin vaivannäköä). Tapahtumakäsittelijät ja muu luokan toimintalogiikka on
- * kirjoitettu käsin.
+ * myöskin vaivannäköä). Tapahtumankäsittelijämetodit ja muu luokan logiikka on
+ * kirjoitettu käsin. Event-olioita välitetään metodeille, vaikkei se olisikaan
+ * tarpeen, koska sen muotoiset metodit oli helppo liittää generoituun koodiin
+ * (ja voihan Event-olioista olla myöhemmin hyötyä muutenkin).
+ * 
+ * Automaattisesti generoitu koodi on sijoitettu luokan loppuun.
  * 
  * @author Hannu Hartikainen
  */
@@ -21,30 +24,47 @@ public class PlanetPanel extends javax.swing.JPanel {
 
     // planeetta, joka otetaan paneeliin jos ei ole planeettoja.
     private static Planet NULL_PLANET = new Planet(0, 0, 0, 0, 0, "(no planet)", Color.black);
+
     private Planet planet;
     private boolean updateAllFields;
     private NbodyFrame nbodyFrame;
     private World world;
 
-    public PlanetPanel() {
-        this.initComponents();
-    }
-
+    /**
+     * Luo paneelin, eli kutsuu NetBeansin generoimaa initComponents()-metodia
+     * ja asettaa tarvittavat attribuutit.
+     * 
+     * @param nbodyFrame frame, johon paneeli kytketään
+     * @param world maailma, johon paneeli kytketään
+     */
     public PlanetPanel(NbodyFrame nbodyFrame, World world) {
-        this();
+        this.initComponents();
         this.nbodyFrame = nbodyFrame;
         this.setWorld(world);
     }
 
+    /**
+     * Asettaa planeetan, joka on valittuna. Olettaa, että planeetta on
+     * listassa. Huolehtii komponenttien päivittämisestä.
+     * 
+     * @param planet planeetta, joka valitaan
+     */
     public void setPlanet(Planet planet) {
         this.planet = planet;
         this.updatePlanetList();
         this.planetListBox.getModel().setSelectedItem(planet);
         this.updateAllFields = true;
+        // tätä kutsua ei tarvitsisi tehdä, jos renderöintisäie on käynnissä.
         this.updateComponentValues();
         this.updateZoomAndPosition();
     }
 
+    /**
+     * Kytkee paneelin maailmaan, jonka planeettoja katsotaan ja muokataan.
+     * Huolehtii että "tyhjä planeetta" valitaan jos maailma on tyhjä.
+     * 
+     * @param world maailma, johon paneeli kytketään
+     */
     public void setWorld(World world) {
         this.world = world;
         this.updatePlanetList();
@@ -55,120 +75,36 @@ public class PlanetPanel extends javax.swing.JPanel {
         }
     }
 
-    public boolean isGridEnabled() {
+    /**
+     * Kertoo halutaanko että ruudukko piirretään
+     */
+    protected boolean isGridEnabled() {
         return this.gridCheckBox.isSelected();
     }
 
-    public boolean isPlanetNamesEnabled() {
+    /**
+     * Kertoo halutaanko planeettojen nimet näkyviin simulaationäkymässä.
+     */
+    protected boolean isPlanetNamesEnabled() {
         return this.planetNamesCheckBox.isSelected();
     }
 
-    private void zoomBoxChanged(java.awt.event.ActionEvent evt) {
-        try {
-            double zoom = Double.parseDouble((String) this.zoomComboBox.getSelectedItem());
-            this.nbodyFrame.getNbodyPanel().setScalingFactor(zoom);
-        } catch (NumberFormatException e) {
-            // ei haittaa mitään, tällöin ei vain tehdä mitään
-            return;
-        }
-
+    /**
+     * Kertoo onko simulaation pyöritys paneelissa päällä.
+     */
+    protected boolean isSimulationPaused() {
+        return this.startStopButton.isSelected();
     }
 
-    private void removePlanetButtonClicked(java.awt.event.ActionEvent evt) {
-        Planet removedPlanet = (Planet) this.planetListBox.getSelectedItem();
-
-        // katsotaan tyhjeneekö planeettalista
-        if (this.planetListBox.getModel().getSize() == 1) {
-            this.setPlanet(NULL_PLANET);
-        }
-        this.world.removePlanet(removedPlanet);
-        this.planetListBox.removeItem(removedPlanet);
-    }
-
-    private void startStopButtonClicked(java.awt.event.ActionEvent evt) {
-        this.nbodyFrame.toggleSimulation();
-    }
-
-    private void removeOtherPlanetsButtonClicked(java.awt.event.ActionEvent evt) {
-        ArrayList<Planet> planetList = (ArrayList<Planet>) this.world.getPlanets().clone();
-        for (Planet p : planetList) {
-            if (!p.equals(this.planet)) {
-                this.world.removePlanet(p);
-            }
-        }
-        this.updatePlanetList();
-    }
-
-    private void massSliderChanged(javax.swing.event.ChangeEvent evt) {
-        double mass = 0.1 * this.massSlider.getValue() * Math.pow(10, this.massExponentSlider.getValue());
-        this.massTextField.setText(String.format("%.1e", mass));
-        this.planet.setMass(mass);
-    }
-
-    private void massTextFieldChanged(java.awt.event.KeyEvent evt) {
-        // toimitaan vain, jos painettiin enteriä
-        if (evt.getKeyChar() != '\n') {
-            return;
-        }
-        try {
-            double mass = Double.parseDouble(this.massTextField.getText());
-            this.nbodyFrame.setDefaultMass(mass);
-            this.planet.setMass(mass);
-            this.updateAllFields = true;
-        } catch (NumberFormatException e) {
-            // ei haittaa mitään, tällöin ei vain tehdä mitään arvoille.
-            return;
-        }
-    }
-
-    private void nameTextFieldChanged(java.awt.event.KeyEvent evt) {
-        // toimitaan vain, jos painettiin enteriä
-        if (evt.getKeyChar() != '\n') {
-            return;
-        }
-
-        this.planet.setName(this.nameTextField.getText());
-        this.updateAllFields = true;
-        this.updatePlanetList();
-    }
-
-    private void velocitySliderChanged(java.awt.event.MouseEvent evt) {
-        this.planet.setVelocityPolar(this.velocitySlider.getValue(), this.directionSlider.getValue() / 1000.0);
-    }
-
-    private void planetColorButtonClicked(java.awt.event.ActionEvent evt) {
-        Color newColor = JColorChooser.showDialog(this, "Choose planet color", this.planet.getColor());
-
-        if (newColor != null) {
-            this.planet.setColor(newColor);
-            this.updateAllFields = true;
-        }
-    }
-
-    private void planetChangedFromList(java.awt.event.ActionEvent evt) {
-        this.setPlanet((Planet) this.planetListBox.getSelectedItem());
-    }
-
-    private void nextPlanet(java.awt.event.ActionEvent evt) {
-        int index = this.planetListBox.getSelectedIndex() + 1; // halutaan
-        // seuraava
-
-        int count = this.planetListBox.getItemCount();
-
-        // valitaan ensimmäinen jos ollaan viimeisessä
-        // ja poistutaan jos lista on tyhjä
-        if (count == 0) {
-            return;
-        } else if (count < index + 1) {
-            index = 0;
-        }
-        this.planetListBox.setSelectedIndex(index);
-        this.setPlanet((Planet) this.planetListBox.getSelectedItem());
-    }
-
+    /**
+     * Päivittää ne komponenttien arvot, jotka muuttuvat jatkuvasti, sekä massan
+     * ja nimen ja värin, jos this.updateAllFields == true.
+     * 
+     * Ei liikuta slidereitä jos käyttäjä on juuri säätämässä niitä.
+     */
     protected void updateComponentValues() {
-        this.xPositionTextField.setText(String.format("%.2f", this.planet.getPosition().x));
-        this.yPositionTextField.setText(String.format("%.2f", this.planet.getPosition().y));
+        this.xPositionTextField.setText(String.format("%.0f", this.planet.getPosition().x));
+        this.yPositionTextField.setText(String.format("%.0f", this.planet.getPosition().y));
 
         if (!this.velocitySlider.getValueIsAdjusting()) {
             this.velocitySlider.setValue((int) this.planet.getLinearVelocity());
@@ -190,29 +126,216 @@ public class PlanetPanel extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Päivittää planeettalistan. Huolehtii ettei lista koskaan ole ihan tyhjä,
+     * vaan tarvittaessa on "tyhjä planeetta".
+     */
     protected void updatePlanetList() {
         Object[] planetArray = this.world.getPlanets().toArray();
 
         // jos ei ole planeettoja, laitetaan "tyhjä planeetta"
         if (planetArray.length == 0) {
-            planetArray = new Object[]{NULL_PLANET};
+            planetArray = new Object[] { NULL_PLANET };
         }
         DefaultComboBoxModel planetComboBoxModel = new DefaultComboBoxModel(planetArray);
         this.planetListBox.setModel(planetComboBoxModel);
     }
 
+    /**
+     * Päivittää simulaationäkymän rajauksen (zoom ja sijainti).
+     */
     protected void updateZoomAndPosition() {
-        this.zoomComboBox.setSelectedItem(String.format("%.4f", this.nbodyFrame.getNbodyPanel().getScalingFactor()));
+        this.zoomComboBox.setSelectedItem(String.format("%.5f", this.nbodyFrame.getNbodyPanel().getScalingFactor()));
         this.xViewTextField.setText("" + (int) this.nbodyFrame.getNbodyPanel().getViewX());
         this.yViewTextField.setText("" + (int) this.nbodyFrame.getNbodyPanel().getViewY());
     }
-    
-    protected boolean isSimulationPaused() {
-        return this.startStopButton.isSelected();
+
+    /**
+     * Poistaa planeetan.
+     * 
+     * @param evt tapahtumaan liittyvä Event-olio
+     */
+    private void removePlanetButtonClicked(java.awt.event.ActionEvent evt) {
+        Planet removedPlanet = (Planet) this.planetListBox.getSelectedItem();
+
+        // katsotaan tyhjeneekö planeettalista
+        if (this.planetListBox.getModel().getSize() == 1) {
+            this.setPlanet(NULL_PLANET);
+        }
+        this.world.removePlanet(removedPlanet);
+        this.planetListBox.removeItem(removedPlanet);
     }
 
-    // HUOM! NÄMÄ ATTRIBUUTIT OVAT NETBEANSIN AUTOMAATTISESTI
-    // GENEROIMIA EIVÄTKÄ MINUN KIRJOITTAMIANI.
+    /**
+     * Pysäyttää tai käynnistää fysiikkasimulaation.
+     * 
+     * @param evt tapahtumaan liittyvä Event-olio
+     */
+    private void startStopButtonClicked(java.awt.event.ActionEvent evt) {
+        this.nbodyFrame.toggleSimulation();
+    }
+
+    /**
+     * Poistaa kaikki muut planeetat.
+     * 
+     * @param evt tapahtumaan liittyvä Event-olio
+     */
+    @SuppressWarnings("unchecked")
+    private void removeOtherPlanetsButtonClicked(java.awt.event.ActionEvent evt) {
+        ArrayList<Planet> planetList = (ArrayList<Planet>) this.world.getPlanets().clone();
+        for (Planet p : planetList) {
+            if (!p.equals(this.planet)) {
+                this.world.removePlanet(p);
+            }
+        }
+        this.updatePlanetList();
+    }
+
+    /**
+     * Muuttaa planeetan massaa.
+     * 
+     * @param evt tapahtumaan liittyvä Event-olio
+     */
+    private void massSliderChanged(javax.swing.event.ChangeEvent evt) {
+        double mass = 0.1 * this.massSlider.getValue() * Math.pow(10, this.massExponentSlider.getValue());
+        this.massTextField.setText(String.format("%.1e", mass));
+        this.planet.setMass(mass);
+    }
+
+    /**
+     * Muuttaa planeetan massaa ja asettaa oletusmassan. Pyytää päivittämään
+     * myös massa-sliderit.
+     * 
+     * @param evt tapahtumaan liittyvä Event-olio
+     */
+    private void massTextFieldChanged(java.awt.event.KeyEvent evt) {
+        // toimitaan vain, jos painettiin enteriä
+        if (evt.getKeyChar() != '\n') {
+            return;
+        }
+        try {
+            double mass = Double.parseDouble(this.massTextField.getText());
+            this.nbodyFrame.setDefaultMass(mass);
+            this.planet.setMass(mass);
+            this.updateAllFields = true;
+        } catch (NumberFormatException e) {
+            // ei haittaa mitään, tällöin ei vain tehdä mitään arvoille.
+            return;
+        }
+    }
+
+    /**
+     * Vaihtaa planeetan nimen.
+     * 
+     * @param evt tapahtumaan liittyvä Event-olio
+     */
+    private void nameTextFieldChanged(java.awt.event.KeyEvent evt) {
+        // toimitaan vain, jos painettiin enteriä
+        if (evt.getKeyChar() != '\n') {
+            return;
+        }
+
+        this.planet.setName(this.nameTextField.getText());
+        this.updateAllFields = true;
+        this.setPlanet(this.planet);
+    }
+
+    /**
+     * Muuttaa planeetan nopeutta (tätä kutsutaan kun joko velocity- tai
+     * direction-sliderin arvo muuttuu).
+     * 
+     * @param evt tapahtumaan liittyvä Event-olio
+     */
+    private void velocitySliderChanged(java.awt.event.MouseEvent evt) {
+        this.planet.setVelocityPolar(this.velocitySlider.getValue(), this.directionSlider.getValue() / 1000.0);
+    }
+
+    /**
+     * Vaihtaa planeetan väriä (näyttää värinvaihtoruudun).
+     * 
+     * @param evt tapahtumaan liittyvä Event-olio
+     */
+    private void planetColorButtonClicked(java.awt.event.ActionEvent evt) {
+        Color newColor = JColorChooser.showDialog(this, "Choose planet color", this.planet.getColor());
+
+        if (newColor != null) {
+            this.planet.setColor(newColor);
+            this.updateAllFields = true;
+        }
+    }
+
+    /**
+     * Vaihtaa planeettaa.
+     * 
+     * @param evt tapahtumaan liittyvä Event-olio
+     */
+    private void planetChangedFromList(java.awt.event.ActionEvent evt) {
+        this.setPlanet((Planet) this.planetListBox.getSelectedItem());
+    }
+
+    /**
+     * Vaihtaa planeettaa seuraavaan listassa olevaan.
+     * 
+     * @param evt tapahtumaan liittyvä Event-olio
+     */
+    private void nextPlanet(java.awt.event.ActionEvent evt) {
+        int index = this.planetListBox.getSelectedIndex() + 1; // halutaan
+        // seuraava
+
+        int count = this.planetListBox.getItemCount();
+
+        // valitaan ensimmäinen jos ollaan viimeisessä
+        // ja poistutaan jos lista on tyhjä
+        if (count == 0) {
+            return;
+        } else if (count < index + 1) {
+            index = 0;
+        }
+        this.planetListBox.setSelectedIndex(index);
+        this.setPlanet((Planet) this.planetListBox.getSelectedItem());
+    }
+
+    /**
+     * Muuttaa näkymän koordinaatteja.
+     * 
+     * @param evt tapahtumaan liittyvä Event-olio
+     */
+    private void viewTextFieldKeyTyped(java.awt.event.KeyEvent evt) {
+        // toimitaan vain, jos painettiin enteriä
+        if (evt.getKeyChar() == '\n') {
+            try {
+                double x = Double.parseDouble(this.xViewTextField.getText());
+                double y = Double.parseDouble(this.yViewTextField.getText());
+
+                this.nbodyFrame.getNbodyPanel().setViewCenter(x, y);
+            } catch (NumberFormatException e) {
+                // ei voi mitään... poikkeus tulee ennen kuin näkymää
+                // siirretään, se siis
+                // jää siirtämättä.
+            }
+        }
+    }
+
+    /**
+     * Säätää zoomia.
+     * 
+     * @param evt tapahtumaan liittyvä Event-olio
+     */
+    private void zoomBoxChanged(java.awt.event.ActionEvent evt) {
+        try {
+            double zoom = Double.parseDouble((String) this.zoomComboBox.getSelectedItem());
+            this.nbodyFrame.getNbodyPanel().setScalingFactor(zoom);
+        } catch (NumberFormatException e) {
+            // ei haittaa mitään, tällöin ei vain tehdä mitään
+            return;
+        }
+    }
+
+
+    /*
+     * HUOM! NÄMÄ ATTRIBUUTIT OVAT NETBEANSIN AUTOMAATTISESTI GENEROIMIA EIVÄTKÄ
+     * MINUN KIRJOITTAMIANI.
+     */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JSlider directionSlider;
     private javax.swing.JCheckBox gridCheckBox;
@@ -252,6 +375,7 @@ public class PlanetPanel extends javax.swing.JPanel {
      * Metodi, joka asettelee komponentit paikoilleen. HUOM! TÄMÄ METODI EI OLE
      * MINUN KIRJOITTAMANI, vaan NetBeansin GUI-editorin generoima.
      */
+    // <editor-fold defaultstate="collapsed"
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -349,11 +473,17 @@ public class PlanetPanel extends javax.swing.JPanel {
         jLabel5.setLabelFor(massTextField);
         jLabel5.setText("Position");
 
+        xPositionTextField.setEditable(false);
         xPositionTextField.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
         xPositionTextField.setText("0");
+        xPositionTextField.setFocusable(false);
+        xPositionTextField.setRequestFocusEnabled(false);
 
+        yPositionTextField.setEditable(false);
         yPositionTextField.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
         yPositionTextField.setText("0");
+        yPositionTextField.setFocusable(false);
+        yPositionTextField.setRequestFocusEnabled(false);
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         jLabel2.setText("Velocity");
@@ -372,7 +502,7 @@ public class PlanetPanel extends javax.swing.JPanel {
             }
         });
 
-        velocitySlider.setMaximum(500);
+        velocitySlider.setMaximum(1000);
         velocitySlider.setValue(0);
         velocitySlider.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
@@ -614,19 +744,4 @@ public class PlanetPanel extends javax.swing.JPanel {
                 .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-private void viewTextFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_viewTextFieldKeyTyped
-    // toimitaan vain, jos painettiin enteriä
-    if (evt.getKeyChar() == '\n') {
-        try {
-            double x = Double.parseDouble(this.xViewTextField.getText());
-            double y = Double.parseDouble(this.yViewTextField.getText());
-
-            this.nbodyFrame.getNbodyPanel().setViewCenter(x, y);
-        } catch (NumberFormatException e) {
-            // ei voi mitään... poikkeus tulee ennen kuin näkymää siirretään, se siis
-            // jää siirtämättä.
-        }
-    }
-}//GEN-LAST:event_viewTextFieldKeyTyped
 }

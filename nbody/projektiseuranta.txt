@@ -53,4 +53,10 @@ YHTEENSÄ 49h
       
 18.12. 3h: grid, about-laatikko
 
-19.12. 1h: bugikorjauksia
+19.12. 2h: bugikorjauksia
+
+20.12. 2h: koodin siistintä & kommentointi
+
+YHTEENSÄ 72h
+
+21.12. 1h: bugikorjaukset, planeetan valitseminen klikkaamalla

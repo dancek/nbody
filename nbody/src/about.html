@@ -1,12 +1,13 @@
 <html>
-<head></head>
+<head><title>About nbody</title></head>
 <body>
 <h1>Quick help:</h1>
 <ul>
 <li>add planets by double clicking;
    then click to place a velocity vector</li>
-<li>modify planet properties at any time
-   from the side panel (try it!)</li>
+<li>choose a planet by clicking on it or from the listbox or by clicking "next planet"</li>
+<li>modify planet and view properties at any time
+   from the side panel (try clicking everything!)</li>
 <li>remove planets by clicking "remove planet"</li>
 <li>move view around by dragging background</li>
 <li>zoom by using scrollwheel (zooms where
@@ -16,16 +17,21 @@
 <li>you can set the default mass for new planets by setting the mass in the mass text box and pressing return</li>
 </ul>
 
-<h1>Known issues:</h1>
+<h1>Known issues / non-issues:</h1>
 <ul>
-<li>numerical integration is (by definition)
-   inaccurate, and if planets experience
-   extreme accelerations, they escape</li>
-<li>direction as a slider from 0 to 2*pi is
-   unintuitive; however, I wanted to also
-   show the linear velocity and couldn't
-   come up with a better arrangement</li>
+<li>numerical integration is (by definition) inaccurate, and if planets experience extreme accelerations, they escape</li>
+<li>load and save can't be used with web start</li>
+<li>direction as a slider from 0 to 2*pi is unintuitive (but this arrangement is the best I could come up with; dividing velocity into components would be less useful)</li>
+<li>there's no collision detection (on purpose; it'd be stupid since the planets are drawn way bigger than they'd actually be)</li>
 <li>the app isn't very usable at small resolutions since the side panel takes some space</li>
 </ul>
+
+<h1>Possible upcoming features</h1>
+<ul>
+<li>stabilizing orbits by changing mass or velocity</li>
+<li>a collection of interesting worlds to be distributed with nbody</li>
+<li>textured planets (easy, but I'd need to make the textures)</li>
+</ul>
+
 </body>
 </html>

@@ -8,11 +8,13 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import javax.swing.JPanel;
-
 /**
  * Luokka sisältää metodit fysiikan ja renderöinnin pyörittämiseen halutuin
- * väliajoin.
+ * väliajoin (omassa säikeessään). Swingissä on turvallista kutsua lähinnä
+ * repaint()-metodeja tapahtumasäikeen ulkopuolelta.
+ * PlanetPanel.updateComponentValues() tekee kyllä muutakin, mutta ilmeisesti se
+ * on melko turvallista (siinä ei muokata komponentteja, joita käyttäjä on
+ * näpelöimässä).
  * 
  * @author Hannu Hartikainen
  */
