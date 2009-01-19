@@ -10,9 +10,11 @@ import java.awt.Color;
  */
 public class Planet extends PhysicalObject {
 
-    // planeetan oletusmassa (tätä käytetään aluksi, oletusmassaa voi vaihtaa
-    // käyttöliittymästä)
-    protected static final double DEFAULT_MASS = 1e10;
+    /**
+     * Planeetan oletusmassa (tätä käytetään aluksi, oletusmassaa voi vaihtaa
+     * käyttöliittymästä).
+     */
+    protected static final double DEFAULT_MASS = 1e15;
 
     // käytetään järjestyslukua että saadaan jokaiselle planeetalle uniikki nimi
     private static int nextPlanetNumber = 0;

@@ -11,7 +11,14 @@ package dancek.vecmath;
  */
 public class SimpleVector implements Cloneable {
 
+    /**
+     * Vektorin x-komponentti.
+     */
     public volatile double x;
+    
+    /**
+     * Vektorin y-komponentti.
+     */
     public volatile double y;
 
     /**

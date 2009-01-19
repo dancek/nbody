@@ -18,7 +18,10 @@ import dancek.vecmath.SimpleVector;
  * @author Hannu Hartikainen
  */
 public class World {
-    // gravitaatiovakio (kopioitu reaalimaailmasta)
+
+    /**
+     * Gravitaatiovakio (reaalimaailman arvo).
+     */
     public final static double GRAVITATIONAL_CONSTANT = 6.6743e-11;
 
     /**

@@ -60,3 +60,5 @@ YHTEENSÄ 49h
 YHTEENSÄ 72h
 
 21.12. 1h: bugikorjaukset, planeetan valitseminen klikkaamalla
+
+22.12. 1h: lopullinen siistintä

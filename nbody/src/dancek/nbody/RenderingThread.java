@@ -20,10 +20,22 @@ import java.util.concurrent.TimeUnit;
  */
 public class RenderingThread {
 
-    // montako kertaa sekunnissa ajetaan (50-60 on kohtuullinen, enempi parempi
-    // mutta vaatisi aika paljon tehoa)
+    /**
+     * Montako kertaa sekunnissa ajetaan (50-60 on kohtuullinen, enempi parempi
+     * mutta vaatisi aika paljon tehoa).
+     */
     private static final int PHYSICS_FPS = 60;
+
+    /**
+     * Aika-askeleen pituus.
+     */
     protected static final double PHYSICS_TIMESTEP = 1.0 / PHYSICS_FPS;
+
+    /**
+     * Instanssien tekeminen ei ole järkevää, ei siis sallita sitä.
+     */
+    private RenderingThread() {
+    }
 
     /**
      * Laittaa fysiikan pyörimään muttei tee repaint()-kutsuja. Käytin tätä

@@ -110,9 +110,12 @@ public class NbodyFrame extends JFrame {
      */
     private static final String WORLD_FILE_EXTENSION = "world";
     private static final String WORLD_FILE_REGEX = ".*\\." + WORLD_FILE_EXTENSION;
-
     private static final FileFilter WORLD_FILE_FILTER = new RegexFileFilter(WORLD_FILE_REGEX, "nbody (*."
             + WORLD_FILE_EXTENSION + ")");
+
+    /**
+     * Attribuutit
+     */
     private World world;
     private NbodyPanel nbodyPanel;
     private ScheduledFuture<?> simulationHandle;
@@ -123,7 +126,6 @@ public class NbodyFrame extends JFrame {
     private int mouseDragLastY;
     private JScrollPane scrollPane;
     private AboutDialog aboutDialog;
-
     private double defaultMass;
 
     /**

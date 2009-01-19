@@ -3,7 +3,8 @@ package dancek.nbody;
 import dancek.vecmath.SimpleVector;
 
 /**
- * PhysicalObject is an abstract class for any physical object (i.e. has mass).
+ * Abstrakti luokka, jonka on tarkoitus kuvata mitä tahansa fyysistä
+ * (käytännössä massallista) kappaletta.
  * 
  * @author Hannu Hartikainen
  */

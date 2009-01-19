@@ -13,11 +13,27 @@ import javax.swing.SwingUtilities;
  */
 public class Nbody {
 
+    /**
+     * Oletusmaailman tiedostonimi.
+     */
     protected static final String DEFAULT_WORLD_FILENAME = "/solarsystem.world";
 
+    /**
+     * Satunnaisgeneraattori, jonka on tarkoitus olla kaikkien muiden ohjelman
+     * luokkien käytettävissä.
+     */
     public static final Random rand = new Random();
 
+    /**
+     * Ohjelman versio.
+     */
     public static final String VERSION = "1.0";
+
+    /**
+     * Instanssien tekeminen ei ole järkevää, ei siis sallita sitä.
+     */
+    private Nbody() {
+    }
 
     /**
      * Oletusmaailman pulauttava metodi. Yrittää ladata maailman tiedostosta;
